@@ -2,13 +2,13 @@
   <div id="app">
     <my-header></my-header>
 
-    <my-menu></my-menu>
+    <!--<my-menu></my-menu>-->
 
-    <div style="margin-left:220px;margin-top:20px;">
+    <div class="my_body">
       <router-view></router-view>
     </div>
     
-    <my-footer></my-footer>
+    <!--<my-footer></my-footer>-->
   </div>
 </template>
 
@@ -32,10 +32,25 @@ body{
   height:100%;
   overflow:hidden;
 }
+*{
+  margin:0;
+  padding:0;
+}
+*,:after,:before{box-sizing:border-box}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+.my_body{
+    position: fixed;
+    top: 65px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    transition: all 218ms ease;
+    padding:10px;
 }
 </style>

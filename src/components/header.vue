@@ -6,18 +6,19 @@
       </el-col>
       <el-col :span="17">
         <el-menu theme="dark" :default-active="$route.path" class="el-menu-demo" mode="horizontal" router>
-          <el-menu-item index="/index">首页</el-menu-item>
-          <el-menu-item index="/page2">第二页</el-menu-item>
-           <el-submenu index="2">
-            <template slot="title">我的工作台</template>
-            <el-menu-item index="2-1">选项1</el-menu-item>
-            <el-menu-item index="2-2">选项2</el-menu-item>
-            <el-menu-item index="2-3">选项3</el-menu-item>
-          </el-submenu>
+          <el-menu-item index="/index">流程管理</el-menu-item>
+          <el-menu-item index="/page2">发布管理</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="4">
-        
+        <el-dropdown style="float:right;margin:15px 10px 0 0;">
+        <el-button>
+          超级管理员<i class="el-icon-caret-bottom el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>退出</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       </el-col>
     </el-row>
    
@@ -36,4 +37,16 @@ export default {
     height:40px;
     margin:10px;
   }
+  .el-menu--horizontal .el-menu-item.is-active {
+    background-color: rgba(0,0,0,.2);
+  }
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-bottom: 1px solid #D9D9D9;
+    z-index: 50;
+    transition: right 218ms ease;
+  } 
 </style>
