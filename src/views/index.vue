@@ -1,12 +1,14 @@
 <template>
-    <div class="board-scrum-view">
-      <ul class="board-scrum-stages">
-          <li v-for="card in box_card" class="scrum-stage">
-            <card-box v-bind:card="card"></card-box>
-          </li>
-          <li class="scrum-stage"><el-button class="el-icon-plus" v-on:click="add_card"> 新建流程</el-button></li>
-        </ul>
-    </div>
+  <div class="board-scrum-view">
+    <ul class="board-scrum-stages">
+      <li v-for="card in box_card" class="scrum-stage">
+        <card-box v-bind:card="card"></card-box>
+      </li>
+      <li class="scrum-stage">
+        <el-button class="el-icon-plus" v-on:click="add_card"> 新建流程</el-button>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -46,14 +48,16 @@ export default {
     overflow-y: auto;
     overflow-x: hidden;
   }
+  
   .board-scrum-stages {
     position: relative;
     white-space: nowrap;
     overflow-x: auto;
     height: 100%;
-    -webkit-transform: translate3d(0,0,0);
-    transform: translate3d(0,0,0);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
+  
   .scrum-stage {
     position: relative;
     display: -webkit-inline-flex;
@@ -69,5 +73,4 @@ export default {
     vertical-align: top;
     border-radius: 3px;
   }
- 
 </style>

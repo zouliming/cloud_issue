@@ -45,7 +45,7 @@ body{
 }
 .my_body{
     position: fixed;
-    top: 65px;
+    top: 64px;
     right: 0;
     bottom: 0;
     left: 0;
