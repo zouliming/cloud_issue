@@ -16,9 +16,9 @@
             <div v-for="task in tasks" class="text item">
                 <div class="diy_notification">
                     <div class="el-notification__group">
-                        <span>任务{{task.name}}</span>
-                        <i class="el-icon-edit" style="float:right;cursor: pointer;" @click="update_task_box"></i>
-                        <p>1.修复登录BUG <br/>2.优化注册流程</p>
+                        <span @click="update_task_box">{{task.name}}</span>
+                        <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(task)"></i>
+                        <p>{{task.desc}}</p>
                         <el-button icon="arrow-left" size="mini"></el-button>
                         <el-button icon="arrow-right" size="mini" style="float:right;"></el-button>
                     </div>
@@ -27,7 +27,7 @@
 
             <div class="diy_notification">
                 <div class="el-notification__group">
-                    <span class="el-icon-plus" v-on:click="add_task" style="cursor: pointer;"> 新建任务</span>
+                    <span class="el-icon-plus" v-on:click="add_task_box" style="cursor: pointer;"> 新建任务</span>
                 </div>
             </div>
         </el-card>
@@ -35,8 +35,8 @@
         <!--编辑窗-->
         <el-dialog :title="editFormTtile" v-model="editFormVisible" size="tiny">
             <span>
-                <el-form ref="form" :model="form" label-width="70px">
-                    <el-form-item label="任务名称">
+                <el-form :model="form" ref="form" label-width="70px" :rules="rules">
+                    <el-form-item label="任务名称" prop="name">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
                     <el-form-item label="结束时间">
@@ -53,7 +53,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="add_task">立即创建</el-button>
-                        <el-button>取消</el-button>
+                        <el-button v-on:click="close_task_box">取消</el-button>
                     </el-form-item>
                 </el-form>
             </span>
@@ -68,7 +68,7 @@ export default {
     props: ['card'],
     data: function () {
         return {
-            tasks:[{name:'任务1'}],
+            tasks:[],
             editFormVisible:false,//编辑界面显是否显示
             editFormTtile:'编辑',//编辑界面标题
             form: {
@@ -76,18 +76,57 @@ export default {
                 date: '',
                 level: '普通',
                 desc: ''
+            },
+             rules: {
+                name: [
+                    { required: true, message: '请输入名称', trigger: 'blur' },
+                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ]
             }
         }
     },
     methods: {
         add_task () {
-            this.tasks.push({
-                name:'测试'
-            })
+             this.$refs.form.validate((valid) => {
+                if (valid) {
+                    this.tasks.push(JSON.parse(JSON.stringify(this.form)))
+                    this.editFormVisible=false
+                } else {
+                    return false;
+                }
+            });
+        },
+        add_task_box(){
+            this.editFormVisible=true
+            this.editFormTtile='添加'
+            this.$refs.form.resetFields();
         },
         update_task_box(){
             this.editFormVisible=true
             this.editFormTtile='编辑'
+            this.$refs.form.resetFields();
+        },
+        close_task_box(){
+            this.editFormVisible=false
+        },
+        del_task(task){
+            this.$confirm('确认操作?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+            this.tasks.splice(this.tasks.indexOf(task), 1)
+            this.$message({
+                type: 'success',
+                message: '删除成功!'
+            });
+            }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消删除'
+            });          
+            });
+
         }
     }
 }
