@@ -99,7 +99,9 @@ export default {
         add_task_box(){
             this.editFormVisible=true
             this.editFormTtile='添加'
-            this.$refs.form.resetFields();
+            this.$nextTick(function() {
+                this.$refs.form.resetFields();
+            })
         },
         update_task_box(){
             this.editFormVisible=true

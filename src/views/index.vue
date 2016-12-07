@@ -19,9 +19,7 @@ import CardBox from '../components/card_box'
 export default {
   data () {
     return {
-      box_card : [
-        {name:'开发'}
-        ]
+      box_card : []
     }
   },
   methods: {
