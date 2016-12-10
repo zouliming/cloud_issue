@@ -6,7 +6,6 @@
 
 <script>
 import Vue from 'vue'
-import api from '../api/common'
 import CardBox from '../components/card_box'
 
 export default {
