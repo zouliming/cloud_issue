@@ -51,6 +51,5 @@ body{
     left: 0;
     overflow: hidden;
     transition: all 218ms ease;
-    padding:10px;
 }
 </style>

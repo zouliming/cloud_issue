@@ -1,36 +1,44 @@
 <template>
     <section>
-        <el-card class="box-card">
-            <div slot="header" class="clearfix my_handle">
-                <span style="line-height: 36px;">{{card.name}}</span>
-                <el-dropdown style="float: right;">
-                    <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>编辑</el-dropdown-item>
-                        <el-dropdown-item>设置负责人</el-dropdown-item>
-                        <el-dropdown-item>清空</el-dropdown-item>
-                        <el-dropdown-item divided>删除</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </div>
-            <div v-for="task in tasks" class="text item">
-                <div class="diy_notification">
-                    <div class="el-notification__group">
-                        <span @click="update_task_box">{{task.name}}</span>
-                        <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(task)"></i>
-                        <p>{{task.desc}}</p>
-                        <el-button icon="arrow-left" size="mini"></el-button>
-                        <el-button icon="arrow-right" size="mini" style="float:right;"></el-button>
-                    </div>
-                </div>
-            </div>
+        <div class="board-scrum-view">
+            <ul class="board-scrum-stages">
+                <li v-for="(card,index) in cards" class="scrum-stage">
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix my_handle">
+                            <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.name}}</span>
+                            <el-dropdown style="float: right;">
+                                <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>设置负责人</el-dropdown-item>
+                                    <el-dropdown-item>清空</el-dropdown-item>
+                                    <el-dropdown-item divided @click="del_card(card)">删除</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                        <div v-for="task in card.tasks" class="text item">
+                            <div class="diy_notification">
+                                <div class="el-notification__group">
+                                    <span @click="update_task_box">{{task.name}}</span>
+                                    <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(task)"></i>
+                                    <p>{{task.desc}}</p>
+                                    <el-button icon="arrow-left" size="mini"></el-button>
+                                    <el-button icon="arrow-right" size="mini" style="float:right;"></el-button>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="diy_notification">
-                <div class="el-notification__group">
-                    <span class="el-icon-plus" v-on:click="add_task_box" style="cursor: pointer;"> 新建任务</span>
-                </div>
-            </div>
-        </el-card>
+                        <div class="diy_notification">
+                            <div class="el-notification__group">
+                                <span class="el-icon-plus" v-on:click="add_task_box" style="cursor: pointer;"> 新建任务</span>
+                            </div>
+                        </div>
+                    </el-card>
+                </li>
+                <li class="scrum-stage">
+                    <el-button class="el-icon-plus" v-on:click="add_card"> 新建流程</el-button>
+                </li>
+            </ul>
+        </div>
 
         <!--编辑窗-->
         <el-dialog :title="editFormTtile" v-model="editFormVisible" size="tiny">
@@ -65,9 +73,9 @@
 import Vue from 'vue'
 
 export default {
-    props: ['card'],
     data: function () {
         return {
+            cards:[],
             tasks:[],
             editFormVisible:false,//编辑界面显是否显示
             editFormTtile:'编辑',//编辑界面标题
@@ -86,6 +94,19 @@ export default {
         }
     },
     methods: {
+        add_card () {
+            this.cards.push({
+                name:'新建流程',
+                tasks:{}
+            });
+        },
+        update_card(card,event){
+            Vue.set(card,'name',event.target.innerHTML)
+        },
+        del_card(card){
+            alert("dd");
+            this.cards.splice(card.indexOf(task), 1)
+        },
         add_task () {
              this.$refs.form.validate((valid) => {
                 if (valid) {
@@ -135,6 +156,43 @@ export default {
 </script>
 
 <style scoped>
+    .board-scrum-view {
+        position: relative;
+        height: 100%;
+        background-color: #FFF;
+        border-style: solid;
+        border-width: 0;
+        border-color: #E5E5E5;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    .board-scrum-stages {
+        position: relative;
+        white-space: nowrap;
+        overflow-x: auto;
+        height: 100%;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+    
+    .scrum-stage {
+        position: relative;
+        display: -webkit-inline-flex;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        margin-right: 10px;
+        vertical-align: top;
+        border-radius: 3px;
+        margin: 10px;
+    }
+    
     .diy_notification {
         width: 250px;
         padding: 10px;
