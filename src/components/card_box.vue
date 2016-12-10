@@ -1,43 +1,44 @@
 <template>
     <section>
         <div class="board-scrum-view">
-            <ul class="board-scrum-stages">
-                <li v-for="(card,index) in cards" class="scrum-stage">
+            <div class="board-scrum-stages">
+                <div v-for="(card,index) in cards" class="scrum-stage" v-dragging="{ item: card, list: cards, group: 'card' }" :key="card.id">
                     <el-card class="box-card">
                         <div slot="header" class="clearfix my_handle">
                             <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.name}}</span>
-                            <el-dropdown style="float: right;">
+                            <el-dropdown style="float: right;" @command="del_card(card)">
                                 <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item>设置负责人</el-dropdown-item>
                                     <el-dropdown-item>清空</el-dropdown-item>
-                                    <el-dropdown-item divided @click="del_card(card)">删除</el-dropdown-item>
+                                    <el-dropdown-item divided>删除</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </div>
-                        <div v-for="task in card.tasks" class="text item">
+                        <div v-for="task in card.tasks" class="text item" v-dragging="{ item: task, list: card.tasks, group: 'task' }" :key="task.name">
                             <div class="diy_notification">
                                 <div class="el-notification__group">
-                                    <span @click="update_task_box">{{task.name}}</span>
-                                    <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(task)"></i>
+                                    <span @click="update_task_box(card,task)">{{task.name}}</span>
+                                    <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
                                     <p>{{task.desc}}</p>
-                                    <el-button icon="arrow-left" size="mini"></el-button>
-                                    <el-button icon="arrow-right" size="mini" style="float:right;"></el-button>
+                                    <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
+                                    <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="diy_notification">
                             <div class="el-notification__group">
-                                <span class="el-icon-plus" v-on:click="add_task_box" style="cursor: pointer;"> 新建任务</span>
+                                <span class="el-icon-plus" v-on:click="add_task_box(card)" style="cursor: pointer;"> 新建任务</span>
                             </div>
                         </div>
                     </el-card>
-                </li>
-                <li class="scrum-stage">
+                </div>
+
+                <div class="scrum-stage">
                     <el-button class="el-icon-plus" v-on:click="add_card"> 新建流程</el-button>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
 
         <!--编辑窗-->
@@ -71,15 +72,17 @@
 
 <script>
 import Vue from 'vue'
+import VueDND from 'awe-dnd'
+Vue.use(VueDND)
 
 export default {
     data: function () {
         return {
             cards:[],
-            tasks:[],
             editFormVisible:false,//编辑界面显是否显示
             editFormTtile:'编辑',//编辑界面标题
             form: {
+                id:'',
                 name: '',
                 date: '',
                 level: '普通',
@@ -96,61 +99,92 @@ export default {
     methods: {
         add_card () {
             this.cards.push({
+                id:new Date().getTime(),
                 name:'新建流程',
-                tasks:{}
+                tasks:[]
             });
         },
         update_card(card,event){
             Vue.set(card,'name',event.target.innerHTML)
         },
         del_card(card){
-            alert("dd");
-            this.cards.splice(card.indexOf(task), 1)
+            this.cards.splice(this.cards.indexOf(card), 1)
         },
-        add_task () {
-             this.$refs.form.validate((valid) => {
-                if (valid) {
-                    this.tasks.push(JSON.parse(JSON.stringify(this.form)))
-                    this.editFormVisible=false
-                } else {
-                    return false;
-                }
-            });
-        },
-        add_task_box(){
+        add_task_box(card){
+            this.card = card
+            this.form = {
+                id:'',
+                name: '',
+                date: '',
+                level: '普通',
+                desc: ''
+            }
             this.editFormVisible=true
             this.editFormTtile='添加'
             this.$nextTick(function() {
                 this.$refs.form.resetFields();
             })
         },
-        update_task_box(){
+        add_task () {
+             this.$refs.form.validate((valid) => {
+                if (valid) {
+                    if(this.form.id == ''){
+                        this.form.id = new Date().getTime()
+                        this.card.tasks.push(JSON.parse(JSON.stringify(this.form)))
+                    }else{
+                        for(var i=0;i<this.card.tasks.length;i++){
+                            if(this.card.tasks[i].id == this.form.id){
+                                this.card.tasks[i] = this.form
+                            }
+                        }
+                    }
+                    this.editFormVisible=false
+                } else {
+                    return false;
+                }
+            });
+        },
+        update_task_box(card,task){
+            this.card = card
+            this.form = task
             this.editFormVisible=true
             this.editFormTtile='编辑'
-            this.$refs.form.resetFields();
         },
         close_task_box(){
             this.editFormVisible=false
         },
-        del_task(task){
+        del_task(card,task){
             this.$confirm('确认操作?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-            this.tasks.splice(this.tasks.indexOf(task), 1)
-            this.$message({
-                type: 'success',
-                message: '删除成功!'
-            });
+                card.tasks.splice(card.tasks.indexOf(task), 1)
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
             }).catch(() => {
-            this.$message({
-                type: 'info',
-                message: '已取消删除'
-            });          
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
             });
 
+        },
+        move_task(card,task,step){
+            var card_index = this.cards.indexOf(card)
+            if(this.cards[card_index+step]){
+                card.tasks.splice(card.tasks.indexOf(task), 1)
+                this.cards[card_index+step].tasks.push(task);
+            }
         }
+    },
+    mounted () {
+        this.$dragging.$on('dragged', ({ value }) => {
+            console.log(value.item.id)
+            console.log(value.list)
+        })
     }
 }
 </script>
