@@ -6,8 +6,8 @@
       </el-col>
       <el-col :span="17">
         <el-menu theme="dark" :default-active="$route.path" class="el-menu-demo" mode="horizontal" router>
-          <el-menu-item index="/index">流程管理</el-menu-item>
-          <el-menu-item index="/page2">任务工作台</el-menu-item>
+          <el-menu-item index="/index">流程</el-menu-item>
+          <el-menu-item index="/user">用户</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="4">

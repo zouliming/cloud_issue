@@ -1,21 +1,20 @@
 <template>
-    <section>
+    <section class="my_body">
         <div class="board-scrum-view">
             <div class="board-scrum-stages">
-                <div v-for="(card,index) in cards" class="scrum-stage" v-dragging="{ item: card, list: cards, group: 'card' }" :key="card.id">
+                <div v-for="(card,index) in cards" class="scrum-stage" v-dragging="{ item: card, list: cards, group: 'card' }" :key="card.card_id">
                     <el-card class="box-card">
                         <div slot="header" class="clearfix my_handle">
-                            <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.name}}</span>
-                            <el-dropdown style="float: right;" @command="del_card(card)">
+                            <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.card_name}}</span>
+                            <el-dropdown style="float: right;" @command="del_card(card,$event)">
                                 <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>设置负责人</el-dropdown-item>
-                                    <el-dropdown-item>清空</el-dropdown-item>
-                                    <el-dropdown-item divided>删除</el-dropdown-item>
+                                    <el-dropdown-item command='set'>设置通知人</el-dropdown-item>
+                                    <el-dropdown-item divided command='del'>删除</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </div>
-                        <div v-for="task in card.tasks" class="text item" v-dragging="{ item: task, list: card.tasks, group: 'task' }" :key="task.name">
+                        <div v-for="task in card.tasks" class="text item">
                             <div class="diy_notification">
                                 <div class="el-notification__group">
                                     <span @click="update_task_box(card,task)">{{task.name}}</span>
@@ -72,6 +71,7 @@
 
 <script>
 import Vue from 'vue'
+import Api from '../common/api'
 import VueDND from 'awe-dnd'
 Vue.use(VueDND)
 
@@ -96,19 +96,68 @@ export default {
             }
         }
     },
+    created(){
+      this.select_card()
+    },
     methods: {
-        add_card () {
-            this.cards.push({
-                id:new Date().getTime(),
-                name:'新建流程',
-                tasks:[]
+        select_card(){
+            var _this = this
+             Api.get('/Card/select',function(res){
+                _this.cards = res;
             });
         },
-        update_card(card,event){
-            Vue.set(card,'name',event.target.innerHTML)
+        add_card () {
+            var _this = this
+            var card = {
+                card_name:'新建流程'
+            }
+            Api.post('/Card/add',card,function(res){
+                _this.cards.push({
+                    card_id:res.card_id,
+                    card_name:res.card_name,
+                    tasks:[]
+                });
+            });
+            
         },
-        del_card(card){
-            this.cards.splice(this.cards.indexOf(card), 1)
+        update_card(card,event){
+            var card = {
+                card_id : card.card_id,
+                card_name : event.target.innerHTML
+            }
+            Api.post('/Card/update',card,function(res){
+               Vue.set(card,'name',event.target.innerHTML)
+            });
+            
+        },
+        del_card(card,event){
+            var _this = this
+            var card = {
+                card_id : card.card_id,
+            }
+            if(event == 'del'){
+                _this.$confirm('确认删除该流程?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    Api.post('/Card/delete',card,function(res){
+                        _this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        })
+                        _this.select_card()
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            }
+            if(event == 'set'){
+
+            }
         },
         add_task_box(card){
             this.card = card
@@ -182,8 +231,16 @@ export default {
     },
     mounted () {
         this.$dragging.$on('dragged', ({ value }) => {
-            console.log(value.item.id)
-            console.log(value.list)
+            var order = [];
+            value.list.forEach(function(card,index){
+                order.push({
+                    card_id : card.card_id,
+                    card_order : index
+                })
+            })
+            Api.post('/Card/order',{order},function(res){
+                
+            });
         })
     }
 }

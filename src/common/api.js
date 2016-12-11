@@ -1,35 +1,32 @@
-import axios from 'axios'
-// import { Loading } from 'element-ui'
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+Vue.use(VueResource);
+Vue.http.options.emulateJSON = true;
+Vue.http.interceptors.push((request, next)  => {
 
-// let loadingInstance = ''
-// Add a request interceptor
-axios.interceptors.request.use(function (config) {
-  // Do something before request is sent
-  // loadingInstance = Loading.service()
-  return config
-}, function (error) {
-  // Do something with request error
-  return Promise.reject(error)
-})
+  // continue to next interceptor
+  next((response) => {
+    // modify response
 
-// Add a response interceptor
-axios.interceptors.response.use(function (response) {
-  // Do something with response data
-  // loadingInstance.close()
-  return response
-}, function (error) {
-  // Do something with response error
-  return Promise.reject(error)
-})
+  });
+});
 
-const LOGIN_URL = '/static/test.json'
-
+const API_URL = '/api/php/index.php?s=index'
 export default {
-  login (data) {
-    return axios({
-      method: 'get',
-      url: LOGIN_URL,
-      data: data
-    })
+  get(url,success) {
+      Vue.http.get(API_URL+url).then((response) => {
+        // success callback
+        success(response.data);
+      }, (response) => {
+        // error callback
+      });
+  },
+  post(url,param,success){
+    Vue.http.post(API_URL+url, param).then((response) => {
+        // success callback
+        success(response.data);
+      }, (response) => {
+        // error callback
+      });
   }
 }

@@ -4,7 +4,7 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 import index from './views/index.vue'
-import page2 from './views/page2.vue'
+import user from './views/user.vue'
 
 export default new Router({
   mode: 'history',
@@ -12,6 +12,6 @@ export default new Router({
   routes: [
     { path: '/', component: index },
     { path: '/index', component: index },
-    { path: '/page2', component: page2 }
+    { path: '/user', component: user }
   ]
 })
