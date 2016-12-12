@@ -17,11 +17,22 @@
                         <div v-for="task in card.tasks" class="text item">
                             <div class="diy_notification">
                                 <div class="el-notification__group">
-                                    <span @click="update_task_box(card,task)">{{task.name}}</span>
+                                    <span @click="update_task_box(card,task)">{{task.task_name}}</span>
                                     <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
-                                    <p>{{task.desc}}</p>
-                                    <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
-                                    <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
+                                    <p>{{task.task_des}}</p>
+                                    <el-row>
+                                        <el-col :span="8">
+                                            <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <el-badge :value="3" class="item">
+                                                <el-button size="mini">回复</el-button>
+                                            </el-badge>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
+                                        </el-col>
+                                    </el-row>
                                 </div>
                             </div>
                         </div>
@@ -41,23 +52,20 @@
         </div>
 
         <!--编辑窗-->
-        <el-dialog :title="editFormTtile" v-model="editFormVisible" size="tiny">
+        <el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible" size="tiny">
             <span>
-                <el-form :model="form" ref="form" label-width="70px" :rules="rules">
-                    <el-form-item label="任务名称" prop="name">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="结束时间">
-                        <el-date-picker type="datetime" placeholder="选择日期" v-model="form.date" style="width: 100%;"></el-date-picker>
+                <el-form :model="task_form" ref="task_form" label-width="100px" :rules="rules">
+                    <el-form-item label="任务名称" prop="task_name">
+                        <el-input v-model="task_form.task_name"></el-input>
                     </el-form-item>
                     <el-form-item label="优先级">
-                        <el-radio-group v-model="form.level">
-                        <el-radio label="普通"></el-radio>
-                        <el-radio label="紧急"></el-radio>
+                        <el-radio-group v-model="task_form.task_level">
+                        <el-radio :label="1">普通</el-radio>
+                        <el-radio :label="2">紧急</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="任务描述">
-                        <el-input type="textarea" v-model="form.desc" :autosize="{ minRows: 3}"></el-input>
+                        <el-input type="textarea" v-model="task_form.task_des" :autosize="{ minRows: 3}"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="add_task">立即创建</el-button>
@@ -79,19 +87,20 @@ export default {
     data: function () {
         return {
             cards:[],
-            editFormVisible:false,//编辑界面显是否显示
-            editFormTtile:'编辑',//编辑界面标题
-            form: {
-                id:'',
-                name: '',
-                date: '',
-                level: '普通',
-                desc: ''
+            card:{},
+            TaskBoxVisible:false,//编辑界面显是否显示
+            TaskBoxTtile:'编辑',//编辑界面标题
+            task_form: {
+                card_id:'',
+                task_id:'',
+                task_name: '',
+                task_level: 1,
+                task_des: ''
             },
              rules: {
-                name: [
+                task_name: [
                     { required: true, message: '请输入名称', trigger: 'blur' },
-                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                    { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
                 ]
             }
         }
@@ -118,7 +127,6 @@ export default {
                     tasks:[]
                 });
             });
-            
         },
         update_card(card,event){
             var card = {
@@ -161,33 +169,39 @@ export default {
         },
         add_task_box(card){
             this.card = card
-            this.form = {
-                id:'',
-                name: '',
-                date: '',
-                level: '普通',
-                desc: ''
+            this.task_form = {
+                card_id:card.card_id,
+                task_id:'',
+                task_name: '',
+                task_level: 1,
+                task_des: ''
             }
-            this.editFormVisible=true
-            this.editFormTtile='添加'
+            this.TaskBoxVisible=true
+            this.TaskBoxTtile='添加'
             this.$nextTick(function() {
-                this.$refs.form.resetFields();
+                this.$refs.task_form.resetFields();
             })
         },
         add_task () {
-             this.$refs.form.validate((valid) => {
+             this.$refs.task_form.validate((valid) => {
                 if (valid) {
-                    if(this.form.id == ''){
-                        this.form.id = new Date().getTime()
-                        this.card.tasks.push(JSON.parse(JSON.stringify(this.form)))
+                    if(this.task_form.task_id == ''){
+                        var _this = this
+                        Api.post('/Task/add',this.task_form,function(res){
+                            _this.task_form.task_id = res.task_id
+                            _this.card.tasks.push(JSON.parse(JSON.stringify(_this.task_form)))
+                        });
                     }else{
-                        for(var i=0;i<this.card.tasks.length;i++){
-                            if(this.card.tasks[i].id == this.form.id){
-                                this.card.tasks[i] = this.form
+                        var _this = this
+                        Api.post('/Task/update',this.task_form,function(res){
+                            for(var i=0;i<_this.card.tasks.length;i++){
+                                if(_this.card.tasks[i].task_id == _this.task_form.task_id){
+                                    _this.card.tasks.splice(i, 1, JSON.parse(JSON.stringify(_this.task_form)))
+                                }
                             }
-                        }
+                        });
                     }
-                    this.editFormVisible=false
+                    this.TaskBoxVisible=false
                 } else {
                     return false;
                 }
@@ -195,12 +209,12 @@ export default {
         },
         update_task_box(card,task){
             this.card = card
-            this.form = task
-            this.editFormVisible=true
-            this.editFormTtile='编辑'
+            this.task_form = JSON.parse(JSON.stringify(task))
+            this.TaskBoxVisible=true
+            this.TaskBoxTtile='编辑'
         },
         close_task_box(){
-            this.editFormVisible=false
+            this.TaskBoxVisible=false
         },
         del_task(card,task){
             this.$confirm('确认操作?', '提示', {
@@ -208,11 +222,14 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                card.tasks.splice(card.tasks.indexOf(task), 1)
-                this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                });
+                var _this = this
+                Api.post('/Task/delete',task,function(res){
+                    _this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    })
+                    card.tasks.splice(card.tasks.indexOf(task), 1)
+                })
             }).catch(() => {
                 this.$message({
                     type: 'info',
@@ -224,8 +241,20 @@ export default {
         move_task(card,task,step){
             var card_index = this.cards.indexOf(card)
             if(this.cards[card_index+step]){
-                card.tasks.splice(card.tasks.indexOf(task), 1)
-                this.cards[card_index+step].tasks.push(task);
+                var _this = this
+                var move = {
+                    to_card_id:this.cards[card_index+step].card_id,
+                    task_id:task.task_id
+                }
+                Api.post('/Task/move',move,function(res){
+                    _this.$message({
+                        type: 'success',
+                        message: '移动成功!'
+                    })
+                    card.tasks.splice(card.tasks.indexOf(task), 1)
+                    _this.cards[card_index+step].tasks.push(task);
+                })
+
             }
         }
     },

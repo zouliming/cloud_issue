@@ -6,7 +6,7 @@
       </el-col>
       <el-col :span="17">
         <el-menu theme="dark" :default-active="$route.path" class="el-menu-demo" mode="horizontal" router>
-          <el-menu-item index="/index">流程</el-menu-item>
+          <el-menu-item index="/index">任务流</el-menu-item>
           <el-menu-item index="/user">用户</el-menu-item>
         </el-menu>
       </el-col>
