@@ -19,17 +19,12 @@
                                 <div class="el-notification__group">
                                     <span @click="update_task_box(card,task)">{{task.task_name}}</span>
                                     <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
-                                    <p>{{task.task_des}}</p>
+                                    <p v-html="compiledMarkdown(task.task_des)"></p>
                                     <el-row>
-                                        <el-col :span="8">
+                                        <el-col :span="12">
                                             <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
                                         </el-col>
-                                        <el-col :span="8">
-                                            <el-badge :value="3" class="item">
-                                                <el-button size="mini">回复</el-button>
-                                            </el-badge>
-                                        </el-col>
-                                        <el-col :span="8">
+                                        <el-col :span="12">
                                             <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
                                         </el-col>
                                     </el-row>
@@ -65,7 +60,9 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="任务描述">
-                        <el-input type="textarea" v-model="task_form.task_des" :autosize="{ minRows: 3}"></el-input>
+                        <el-input type="textarea" v-model="task_form.task_des" :autosize="{ minRows: 3}" v-show="!task_des_marked_show"></el-input>
+                        <div v-html="compiledMarkdown(task_form.task_des)" v-show="task_des_marked_show"></div>
+                        <el-button type="primary" icon="view" size="mini" title="预览" @click="show_marked"></el-button>（支持markdown）
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="add_task">立即创建</el-button>
@@ -80,6 +77,7 @@
 <script>
 import Vue from 'vue'
 import Api from '../common/api'
+import marked from 'marked'
 import VueDND from 'awe-dnd'
 Vue.use(VueDND)
 
@@ -102,7 +100,8 @@ export default {
                     { required: true, message: '请输入名称', trigger: 'blur' },
                     { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
                 ]
-            }
+            },
+            task_des_marked_show: false
         }
     },
     created(){
@@ -256,6 +255,14 @@ export default {
                 })
 
             }
+        },
+        compiledMarkdown: function (str) {
+            str = marked(str, { sanitize: true })
+            str = str.replace(/\n/g,'<br/>')
+            return str
+        },
+        show_marked(){
+            this.task_des_marked_show = !this.task_des_marked_show
         }
     },
     mounted () {
@@ -328,6 +335,7 @@ export default {
     .box-card {
         background-color: #EEE
     }
+    
 </style>
 
 <style>
