@@ -5,7 +5,9 @@
     <!--<my-menu></my-menu>-->
 
     <div class="my_body">
-      <router-view></router-view>
+       <transition name="fade">
+         <router-view></router-view>
+      </transition>
     </div>
     
     <!--<my-footer></my-footer>-->
@@ -51,5 +53,11 @@ body{
     left: 0;
     overflow: hidden;
     transition: all 218ms ease;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
 }
 </style>
