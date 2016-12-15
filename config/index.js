@@ -23,7 +23,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://localhost',
+        target: 'http://118.244.224.156/cloud_issue_server/public/index.php',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

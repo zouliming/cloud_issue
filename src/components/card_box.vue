@@ -21,10 +21,16 @@
                                     <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
                                     <p v-html="compiledMarkdown(task.task_des)"></p>
                                     <el-row>
-                                        <el-col :span="12">
+                                        <el-col :span="4">
                                             <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
                                         </el-col>
-                                        <el-col :span="12">
+                                        <el-col :span="16">
+                                            <el-select v-model="task.task_level" placeholder="请选择">
+                                                <el-option v-for="task_level in task_level_arr" :label="task_level.label" :value="task_level.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-col>
+                                        <el-col :span="4">
                                             <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
                                         </el-col>
                                     </el-row>
@@ -55,8 +61,7 @@
                     </el-form-item>
                     <el-form-item label="优先级">
                         <el-radio-group v-model="task_form.task_level">
-                        <el-radio :label="1">普通</el-radio>
-                        <el-radio :label="2">紧急</el-radio>
+                        <el-radio :label="task_level.value" v-for="task_level in task_level_arr">{{task_level.label}}</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="任务描述">
@@ -101,7 +106,11 @@ export default {
                     { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
                 ]
             },
-            task_des_marked_show: false
+            task_des_marked_show: false,
+            task_level_arr:[
+                {value:1,label:'普通'},
+                {value:2,label:'紧急'}
+            ]
         }
     },
     created(){
@@ -335,7 +344,6 @@ export default {
     .box-card {
         background-color: #EEE
     }
-    
 </style>
 
 <style>
