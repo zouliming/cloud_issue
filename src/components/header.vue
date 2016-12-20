@@ -11,14 +11,7 @@
         </el-menu>
       </el-col>
       <el-col :span="4">
-        <el-dropdown style="float:right;margin:15px 10px 0 0;">
-          <el-button>
-            超级管理员<i class="el-icon-caret-bottom el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>退出</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <my-login></my-login>
       </el-col>
     </el-row>
 
@@ -26,8 +19,13 @@
 </template>
 
 <script>
+import MyLogin from './login'
+
 export default {
-  name: 'header'
+  name: 'header',
+  components: {
+    'my-login': MyLogin
+  }
 }
 </script>
 

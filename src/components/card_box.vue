@@ -25,10 +25,7 @@
                                             <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
                                         </el-col>
                                         <el-col :span="16">
-                                            <el-select v-model="task.task_level" placeholder="请选择">
-                                                <el-option v-for="task_level in task_level_arr" :label="task_level.label" :value="task_level.value">
-                                                </el-option>
-                                            </el-select>
+                                            &nbsp;
                                         </el-col>
                                         <el-col :span="4">
                                             <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
@@ -97,7 +94,7 @@ export default {
                 card_id:'',
                 task_id:'',
                 task_name: '',
-                task_level: 1,
+                task_level: '1',
                 task_des: ''
             },
              rules: {
@@ -108,8 +105,8 @@ export default {
             },
             task_des_marked_show: false,
             task_level_arr:[
-                {value:1,label:'普通'},
-                {value:2,label:'紧急'}
+                {value:'1',label:'普通'},
+                {value:'2',label:'紧急'}
             ]
         }
     },
@@ -181,7 +178,7 @@ export default {
                 card_id:card.card_id,
                 task_id:'',
                 task_name: '',
-                task_level: 1,
+                task_level: '1',
                 task_des: ''
             }
             this.TaskBoxVisible=true
