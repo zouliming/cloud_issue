@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: JSON.parse(sessionStorage.getItem('user')) || {},
+    user: JSON.parse(sessionStorage.getItem('user')) || {}
   },
   mutations: {
     /**
@@ -16,7 +16,7 @@ export default new Vuex.Store({
      */
     SIGNIN(state, user) {
       sessionStorage.setItem('user', JSON.stringify(user))
-      Object.assign(state, user)
+      state.user = user
     },
     /**
      * 退出登录
@@ -25,7 +25,7 @@ export default new Vuex.Store({
      */
     SIGNOUT(state) {
       sessionStorage.removeItem('user')
-      Object.keys(state).forEach(k => Vue.delete(state, k))
+      state.user = {}
     }
   },
   actions: {

@@ -16,8 +16,7 @@ import { mapState,mapActions } from 'vuex'
       return{
           user_form:{
             name:''
-          },
-          user:{}
+          }
       }
     },
     methods: {
@@ -33,18 +32,23 @@ import { mapState,mapActions } from 'vuex'
             type: 'success',
             message: value + ' 欢迎您！'
           });
-        })
+        }).catch(() => {
+              
+        });
       },
       logout(){
         this.SIGNOUT()
+        this.login_box()
       }
     },
     created(){
-      this.login_box()
+      if(!this.user.name){
+        this.login_box()
+      }
     },
-    computed: mapState({
-      user: state => state.user
-    })
+    computed: {
+       ...mapState(['user'])
+    }
   }
 </script>
 
