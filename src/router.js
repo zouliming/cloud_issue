@@ -14,6 +14,7 @@ import login from './views/login.vue'
   routes: [
     { path: '/', component: index },
     { path: '/index', component: index },
+    { path: '/index/:group_id', component: index },
     { path: '/user', component: user },
     { path: '/login', component:login }
   ]
