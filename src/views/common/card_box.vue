@@ -78,12 +78,13 @@
 
 <script>
     import Vue from 'vue'
-    import Api from '../common/api'
+    import Api from '../../common/api'
     import marked from 'marked'
     import VueDND from 'awe-dnd'
     Vue.use(VueDND)
 
     export default {
+        props: ['group_id'],
         data: function () {
             return {
                 cards: [],
@@ -116,7 +117,7 @@
         methods: {
             select_card() {
                 var _this = this
-                Api.get('/Card/select', function (res) {
+                Api.get('/Card/select/group_id/'+this.group_id, function (res) {
                     _this.cards = res;
                 });
             },
@@ -323,7 +324,6 @@
         margin-right: 10px;
         vertical-align: top;
         border-radius: 3px;
-        margin: 10px;
     }
     
     .diy_notification {

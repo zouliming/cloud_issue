@@ -6,6 +6,7 @@ Vue.use(Router)
 
 import home from './views/home.vue'
 import index from './views/home/index.vue'
+import card from './views/home/card.vue'
 import user from './views/home/user.vue'
 import login from './views/login.vue'
 
@@ -20,7 +21,7 @@ const router = new Router({
             children: [
                 { path: '/', component: index },
                 { path: '/index', component: index },
-                { path: '/index/:group_id', component: index },
+                { path: '/index/:group_id', component: card },
                 { path: '/user', component: user }
             ]
         },

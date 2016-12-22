@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import MyHeader from '../components/header'
+import MyHeader from './common/header'
 
 export default {
   name: 'app',
@@ -20,7 +20,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .my_body{
     position: fixed;
     top: 64px;
@@ -29,5 +29,6 @@ export default {
     left: 0;
     overflow: hidden;
     transition: all 218ms ease;
+    padding: 10px;
 }
 </style>
