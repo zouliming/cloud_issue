@@ -1,39 +1,28 @@
 <template>
   <div id="app">
-    <my-header></my-header>
-
-    <!--<my-menu></my-menu>-->
-
-    <div class="my_body">
-       <transition name="bounce">
-         <router-view></router-view>
-      </transition>
-    </div>
-    
-    <!--<my-footer></my-footer>-->
+    <transition name="bounce">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
 <script>
-import MyHeader from './components/header'
-import MyFooter from './components/footer'
-import MyMenu from './components/menu'
-
-export default {
-  name: 'app',
-  components: {
-    MyHeader, MyFooter, MyMenu
+  export default {
+    name: 'app',
+    components: {
+    }
   }
-}
 </script>
 
 <style>
-body{
-  margin:0;
-  padding:0;
-  height:100%;
-  overflow:hidden;
-}
+	body {
+		margin: 0px;
+		padding: 0px;
+		background: #1F2D3D;
+		font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+		font-weight: 400;
+		-webkit-font-smoothing: antialiased;
+	}
 *{
   margin:0;
   padding:0;
@@ -45,15 +34,7 @@ body{
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-.my_body{
-    position: fixed;
-    top: 64px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    overflow: hidden;
-    transition: all 218ms ease;
-}
+
 .bounce-enter-active {
   animation: bounce-in .5s;
 }

@@ -40,7 +40,7 @@
 
 <script>
 import Vue from 'vue'
-import util from '../common/util'
+import util from '../../common/util'
 
 export default {
   data () {

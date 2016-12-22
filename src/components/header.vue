@@ -6,7 +6,7 @@
       </el-col>
       <el-col :span="17">
         <el-menu theme="dark" :default-active="$route.path" class="my-el-menu" mode="horizontal" router>
-          <el-menu-item index="/index">任务流</el-menu-item>
+          <el-menu-item index="/">任务流</el-menu-item>
           <el-menu-item index="/user">用户</el-menu-item>
           <el-menu-item v-bind:index="'/index/'+group.group_id" v-for="group in groups">
           {{group.group_name}}

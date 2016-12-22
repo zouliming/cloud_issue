@@ -4,20 +4,27 @@ import store from './vuex/store'
 
 Vue.use(Router)
 
-import index from './views/index.vue'
-import user from './views/user.vue'
+import home from './views/home.vue'
+import index from './views/home/index.vue'
+import user from './views/home/user.vue'
 import login from './views/login.vue'
 
- const router = new Router({
-  mode: 'history',
-  scrollBehavior: () => ({ y: 0 }),
-  routes: [
-    { path: '/', component: index },
-    { path: '/index', component: index },
-    { path: '/index/:group_id', component: index },
-    { path: '/user', component: user },
-    { path: '/login', component:login }
-  ]
+const router = new Router({
+    mode: 'history',
+    scrollBehavior: () => ({ y: 0 }),
+    routes: [
+        { path: '/login', component: login },
+        {
+            path: '/',
+            component: home,
+            children: [
+                { path: '/', component: index },
+                { path: '/index', component: index },
+                { path: '/index/:group_id', component: index },
+                { path: '/user', component: user }
+            ]
+        },
+    ]
 })
 
 router.beforeEach(({meta, path}, from, next) => {
