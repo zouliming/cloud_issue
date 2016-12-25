@@ -11,11 +11,17 @@
 
 <script>
   import MyHeader from './common/header'
+  import util from '../common/util'
 
   export default {
     name: 'app',
     components: {
       MyHeader
+    },
+    created() {
+      this.socket_message(function(received_msg){
+        util.showMsgNotification('系统消息', received_msg)
+      })
     }
   }
 </script>

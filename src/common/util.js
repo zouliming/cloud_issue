@@ -17,16 +17,16 @@ export default {
             instance.onshow = function () {
                 // Something to do  
                 //                          setTimeout(instance.close, 3000);  
-                setTimeout(function () {
-                    //instance.close();
-                    alert('有新消息啦');
-                }, 3000)
-                console.log(instance.body)
+                // setTimeout(function () {
+                //     //instance.close();
+                //     alert('有新消息啦');
+                // }, 3000)
+                // console.log(instance.body)
             };
             instance.onclose = function () {
                 // Something to do  
             };
-            console.log(instance)
+            //console.log(instance)
         } else if (Notification && Notification.permission !== "denied") {
             Notification.requestPermission(function (status) {
                 if (Notification.permission !== status) {

@@ -6,7 +6,7 @@ import { sync } from 'vuex-router-sync'
 import * as filters from './filters'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
-
+import './common/socket'
 Vue.use(ElementUI)
 
 // sync the router with the vuex store.

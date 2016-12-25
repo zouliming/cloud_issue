@@ -50,9 +50,7 @@
 </template>
 
 <script>
-  import Vue from 'vue'
   import Api from '../../common/api'
-  import util from '../../common/util'
 
   export default {
     data() {
@@ -76,11 +74,9 @@
     },
     created() {
       this.select_user()
+      this.socket_send('测试内容')
     },
     methods: {
-      notice() {
-        util.showMsgNotification('标题', '内容');
-      },
       add_user_box() {
         this.user_form = {
           user_id: '',

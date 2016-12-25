@@ -15,7 +15,6 @@
   "dependencies": {
     "awe-dnd": "^0.3.0",
     "element-ui": "^1.0.2",
-    "socket.io": "^1.7.2",
     "vue": "^2.1.0",
     "vue-resource": "^1.0.3",
     "vue-router": "^2.0.3",
