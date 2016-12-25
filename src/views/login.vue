@@ -1,6 +1,6 @@
 <template>
   <section class="login_body">
-    <el-form :model="login_form" :rules="rules" ref="login_form" label-position="left" label-width="0px" class="login-box">
+    <el-form :model="login_form" :rules="rules" ref="login_form" label-position="left" label-width="0px" class="login-box" v-on:submit.native.prevent="login">
       <h3 class="title">系统登录</h3>
       <el-form-item prop="user_name">
         <el-input type="text" v-model="login_form.user_name" auto-complete="off" placeholder="账号"></el-input>

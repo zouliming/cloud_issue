@@ -6,10 +6,10 @@
                     <el-card class="box-card">
                         <div slot="header" class="clearfix my_handle">
                             <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.card_name}}</span>
-<el-dropdown style="float: right;" @command="del_card(card,$event)">
+<el-dropdown style="float: right;" @command="manage_card(card,$event)">
 <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
 <el-dropdown-menu slot="dropdown">
-    <el-dropdown-item command='set'>设置通知人</el-dropdown-item>
+    <el-dropdown-item command='set'>设置负责人</el-dropdown-item>
     <el-dropdown-item divided command='del'>删除</el-dropdown-item>
 </el-dropdown-menu>
 </el-dropdown>
@@ -17,9 +17,14 @@
 <div v-for="task in card.tasks" class="text item">
     <div class="diy_notification">
         <div class="el-notification__group">
-            <span @click="update_task_box(card,task)">{{task.task_name}}</span>
-            <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
-<p v-html="compiledMarkdown(task.task_des)"></p>
+            <span @click="update_task_box(card,task)" style="cursor: pointer;"> {{task.task_name}}
+<a class="ui orange empty circular label" v-show="task.task_level==2"></a>
+</span>
+<i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
+<p @click="detail_task_box(task)" style="cursor: pointer;">
+<label>房兴光</label>
+<label style="float: right;">2016-12-24</label>
+</p>
 <el-row>
     <el-col :span="4">
         <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
@@ -48,9 +53,8 @@
 </div>
 </div>
 </div>
-
 <!--编辑窗-->
-<el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible" size="tiny">
+<el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible">
     <span>
                 <el-form :model="task_form" ref="task_form" label-width="100px" :rules="rules">
                     <el-form-item label="任务名称" prop="task_name">
@@ -62,9 +66,7 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="任务描述">
-                        <el-input type="textarea" v-model="task_form.task_des" :autosize="{ minRows: 3}" v-show="!task_des_marked_show"></el-input>
-                        <div v-html="compiledMarkdown(task_form.task_des)" v-show="task_des_marked_show"></div>
-                        <el-button type="primary" icon="view" size="mini" title="预览" @click="show_marked"></el-button>（支持markdown）
+                        <editor :input-content="inputContent" :upload-url="uploadUrl"  v-model="task_form.task_des"></editor>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="add_task">立即创建</el-button>
@@ -73,13 +75,39 @@
                 </el-form>
             </span>
 </el-dialog>
+
+<!--详情-->
+<el-dialog :title="task_form.task_name" v-model="TaskBoxDetailVisible">
+    <p v-html="task_form.task_des"></p>
+</el-dialog>
+
+<!--负责人-->
+<el-dialog title="负责人" v-model="OwnerBoxVisible" size="tiny">
+    <span>
+      <el-form :model="owner_form" label-width="100px">
+          <el-form-item label="负责人">
+            <el-select v-model="owner_form.card_owner" multiple placeholder="请选择">
+              <el-option
+                v-for="user in users"
+                :label="user.user_name"
+                :value="user.user_id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+              <el-button type="primary" @click="update_owner">提交</el-button>
+          </el-form-item>
+      </el-form>
+  </span>
+</el-dialog>
+
 </section>
 </template>
 
 <script>
     import Vue from 'vue'
     import Api from '../../common/api'
-    import marked from 'marked'
+    import Editor from '../common/editor'
     import VueDND from 'awe-dnd'
     Vue.use(VueDND)
 
@@ -91,6 +119,8 @@
                 card: {},
                 TaskBoxVisible: false,//编辑界面显是否显示
                 TaskBoxTtile: '编辑',//编辑界面标题
+                TaskBoxDetailVisible: false,//详情界面显是否显示
+                OwnerBoxVisible: false,
                 task_form: {
                     card_id: '',
                     task_id: '',
@@ -104,27 +134,34 @@
                         { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
                     ]
                 },
-                task_des_marked_show: false,
                 task_level_arr: [
                     { value: '1', label: '普通' },
                     { value: '2', label: '紧急' }
-                ]
+                ],
+                // input content to editor
+                inputContent: 'base on wangeditor',
+                // set image upload api url
+                uploadUrl: '/',
+                users: [],
+                owner_form: {}
             }
         },
         created() {
             this.select_card()
+            this.select_user()
         },
         methods: {
             select_card() {
                 var _this = this
-                Api.get('/Card/select/group_id/'+this.group_id, function (res) {
+                Api.get('/Card/select/group_id/' + this.group_id, function (res) {
                     _this.cards = res;
                 });
             },
             add_card() {
                 var _this = this
                 var card = {
-                    card_name: '新建流程'
+                    card_name: '新建流程',
+                    group_id: this.group_id
                 }
                 Api.post('/Card/add', card, function (res) {
                     _this.cards.push({
@@ -144,7 +181,7 @@
                 });
 
             },
-            del_card(card, event) {
+            manage_card(card, event) {
                 var _this = this
                 var card = {
                     card_id: card.card_id,
@@ -170,7 +207,11 @@
                     });
                 }
                 if (event == 'set') {
-
+                    var _this = this
+                    Api.get('/Card/owner_select/card_id/' + card.card_id, function (res) {
+                        _this.owner_form = res;
+                        _this.OwnerBoxVisible = true
+                    });
                 }
             },
             add_task_box(card) {
@@ -215,9 +256,10 @@
             },
             update_task_box(card, task) {
                 this.card = card
-                this.task_form = JSON.parse(JSON.stringify(task))
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '编辑'
+                this.task_form = JSON.parse(JSON.stringify(task))
+                this.inputContent = task.task_des
             },
             close_task_box() {
                 this.TaskBoxVisible = false
@@ -263,14 +305,26 @@
 
                 }
             },
-            compiledMarkdown: function (str) {
-                str = marked(str, { sanitize: true })
-                str = str.replace(/\n/g, '<br/>')
-                return str
+            detail_task_box(task) {
+                this.task_form = JSON.parse(JSON.stringify(task))
+                this.TaskBoxDetailVisible = true
             },
-            show_marked() {
-                this.task_des_marked_show = !this.task_des_marked_show
-            }
+            select_user() {
+                var _this = this
+                Api.get('/User/select', function (res) {
+                    _this.users = res;
+                });
+            },
+            update_owner() {
+                var _this = this
+                Api.post('/Card/update', this.owner_form, function (res) {
+                    _this.OwnerBoxVisible = false
+                    _this.$message({
+                        type: 'success',
+                        message: '操作成功!'
+                    })
+                });
+            },
         },
         mounted() {
             this.$dragging.$on('dragged', ({ value }) => {
@@ -285,6 +339,9 @@
 
                 });
             })
+        },
+        components: {
+            'editor': Editor
         }
     }
 </script>

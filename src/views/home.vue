@@ -2,22 +2,22 @@
   <div>
     <my-header></my-header>
     <div class="my_body">
-       <transition name="bounce">
-         <router-view></router-view>
+      <transition name="bounce" mode="out-in">
+        <router-view></router-view>
       </transition>
     </div>
   </div>
 </template>
 
 <script>
-import MyHeader from './common/header'
+  import MyHeader from './common/header'
 
-export default {
-  name: 'app',
-  components: {
-    MyHeader
+  export default {
+    name: 'app',
+    components: {
+      MyHeader
+    }
   }
-}
 </script>
 
 <style scoped>
