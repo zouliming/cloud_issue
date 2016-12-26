@@ -59,8 +59,8 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .logo {
-    height: 40px;
-    margin: 10px;
+    height: 50px;
+    margin: 5px 0 0 20px;
   }
   
   .el-menu--horizontal .el-menu-item.is-active {

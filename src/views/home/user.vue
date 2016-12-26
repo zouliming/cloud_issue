@@ -74,7 +74,6 @@
     },
     created() {
       this.select_user()
-      this.socket_send('测试内容')
     },
     methods: {
       add_user_box() {
