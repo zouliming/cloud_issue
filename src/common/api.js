@@ -11,7 +11,7 @@ Vue.http.interceptors.push((request, next) => {
   });
 });
 
-const API_URL = '/api?s=index'
+const API_URL = '/api/index.php?s=index'
 export default {
   get(url, success) {
     Vue.http.get(API_URL + url).then((response) => {
