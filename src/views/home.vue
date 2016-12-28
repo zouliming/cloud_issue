@@ -12,6 +12,7 @@
 <script>
   import MyHeader from './common/header'
   import util from '../common/util'
+  import '../common/socket'
 
   export default {
     name: 'app',
