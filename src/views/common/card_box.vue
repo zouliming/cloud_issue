@@ -300,9 +300,7 @@
                             message: '移动成功!'
                         })
                         card.tasks.splice(card.tasks.indexOf(task), 1)
-                        _this.cards[card_index + step].tasks.push(task);
-                        //广播
-                        _this.socket_send('任务（'+task.task_name+'）流程变更！')
+                        _this.cards[card_index + step].tasks.push(task)
                     })
 
                 }

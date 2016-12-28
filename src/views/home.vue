@@ -19,8 +19,13 @@
       MyHeader
     },
     created() {
-      this.socket_message(function(received_msg){
-        util.showMsgNotification('系统消息', received_msg)
+      this.socket_message(function (data) {
+        if (data.type == 1) {
+          util.showMsgNotification('系统消息', data.msg)
+        }
+        if (data.type == 2) {
+          alert(data.msg)
+        }
       })
     }
   }
