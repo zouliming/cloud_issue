@@ -1,10 +1,12 @@
 <template>
   <div class="header el-menu--dark">
     <el-row>
-      <el-col :span="3">
-        <img src="../../assets/logo.png" class="logo">
+      <el-col :span="4">
+        <h2 class="ui header" style="position: relative;height: 65px;color: #ddd;height: 60px;display: inline-block;overflow: hidden;">
+          <img src="../../assets/logo.png" class="ui circular image"> 任务流
+        </h2>
       </el-col>
-      <el-col :span="17">
+      <el-col :span="16">
         <el-menu theme="dark" :default-active="$route.path" class="my-el-menu" mode="horizontal" router>
           <el-menu-item index="/">项目</el-menu-item>
           <el-menu-item index="/user">用户</el-menu-item>
@@ -63,11 +65,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .logo {
-    height: 50px;
-    margin: 5px 0 0 20px;
-  }
-  
   .el-menu--horizontal .el-menu-item.is-active {
     background-color: rgba(0, 0, 0, .2);
   }

@@ -109,13 +109,14 @@
     import Api from '../../common/api'
     import Editor from '../common/editor'
     import VueDND from 'awe-dnd'
+    import { mapState, mapActions } from 'vuex'
+
     Vue.use(VueDND)
 
     export default {
         props: ['group_id'],
         data: function () {
             return {
-                cards: [],
                 card: {},
                 TaskBoxVisible: false,//编辑界面显是否显示
                 TaskBoxTtile: '编辑',//编辑界面标题
@@ -139,24 +140,23 @@
                     { value: '2', label: '紧急' }
                 ],
                 // input content to editor
-                inputContent: 'base on wangeditor',
+                inputContent: '',
                 // set image upload api url
                 uploadUrl: '/',
                 users: [],
                 owner_form: {}
             }
         },
+        computed: {
+             ...mapState({
+              cards: state => state.cards.cards
+            })
+        },
         created() {
-            this.select_card()
             this.select_user()
+            this.$store.dispatch('select_card',this.group_id);
         },
         methods: {
-            select_card() {
-                var _this = this
-                Api.get('/Card/select/group_id/' + this.group_id, function (res) {
-                    _this.cards = res;
-                });
-            },
             add_card() {
                 var _this = this
                 var card = {

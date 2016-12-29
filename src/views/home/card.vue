@@ -6,7 +6,7 @@
 
 <script>
 import Vue from 'vue'
-import CardBox from '../common/card_box'
+import CardBox from './card_box'
 
 export default {
   data () {

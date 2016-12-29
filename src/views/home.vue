@@ -6,29 +6,19 @@
         <router-view></router-view>
       </transition>
     </div>
+    <my-notify></my-notify>
   </div>
 </template>
 
 <script>
   import MyHeader from './common/header'
   import util from '../common/util'
-  import '../common/socket'
+  import MyNotify from './common/notify'
 
   export default {
     name: 'app',
     components: {
-      MyHeader
-    },
-    created() {
-      this.socket_send(this.$store.state.user.user.user_id)
-      this.socket_message(function (data) {
-        if (data.type == 1) {
-          util.showMsgNotification('系统消息', data.msg)
-        }
-        if (data.type == 2) {
-          alert(data.msg)
-        }
-      })
+      MyHeader,MyNotify
     }
   }
 </script>
