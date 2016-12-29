@@ -33,11 +33,16 @@
     name: 'header',
     data: function () {
       return {
-       
+
       }
     },
     computed: {
-       ...mapState(['user'])
+      //  ...mapState({
+      //   user: state => state.user.user
+      // })
+      user() {
+        return this.$store.state.user.user
+      }
     },
     methods: {
       ...mapActions(['SIGNOUT']),

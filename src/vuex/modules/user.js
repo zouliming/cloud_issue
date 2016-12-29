@@ -1,9 +1,5 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default{
   state: {
     user: JSON.parse(sessionStorage.getItem('user')) || ''
   },
@@ -36,4 +32,4 @@ export default new Vuex.Store({
       commit('SIGNOUT')
     }
   }
-})
+}

@@ -20,6 +20,7 @@
       MyHeader
     },
     created() {
+      this.socket_send(this.$store.state.user.user.user_id)
       this.socket_message(function (data) {
         if (data.type == 1) {
           util.showMsgNotification('系统消息', data.msg)

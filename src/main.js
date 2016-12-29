@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App'
-import store from './vuex/store'
+import store from './vuex'
 import router from './router'
 import { sync } from 'vuex-router-sync'
 import * as filters from './filters'

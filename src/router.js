@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from './vuex/store'
+import store from './vuex'
 
 Vue.use(Router)
 
@@ -29,7 +29,7 @@ const router = new Router({
 })
 
 router.beforeEach(({meta, path}, from, next) => {
-    if (!store.state.user && path !== '/login') {
+    if (!store.state.user.user && path !== '/login') {
         return next({ path: '/login' })
     }
     next()
