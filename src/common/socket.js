@@ -1,6 +1,6 @@
 
 import Vue from 'vue'
-const SOCKET_URL = 'ws://118.244.224.156:2346'
+import {SOCKET_URL} from '../config'
 
 export default {
     init: function (init_send_msg, received_fun) {
