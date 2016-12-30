@@ -85,7 +85,9 @@
       this.select_user()
     },
     computed:{
-       ...mapState(['user'])
+       ...mapState({
+         user:state=>state.user.user
+       })
     },
     methods: {
       select_group() {

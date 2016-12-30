@@ -23,7 +23,7 @@
   }
 </script>
 
-<style scoped>
+<style>
 .my_body{
     position: fixed;
     top: 64px;

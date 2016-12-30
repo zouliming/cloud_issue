@@ -6,7 +6,7 @@
                     <el-card class="box-card">
                         <div slot="header" class="clearfix my_handle">
                             <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.card_name}}</span>
-<el-dropdown style="float: right;" @command="manage_card(card,$event)">
+<el-dropdown style="position: absolute;right: 12px;cursor: pointer;" @command="manage_card(card,$event)">
 <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
 <el-dropdown-menu slot="dropdown">
     <el-dropdown-item command='set'>设置负责人</el-dropdown-item>
@@ -21,9 +21,9 @@
 <a class="ui orange empty circular label" v-show="task.task_level==2"></a>
 </span>
 <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
-<p @click="detail_task_box(task)" style="cursor: pointer;">
+<p @click="detail_task_box(task)" style="cursor: pointer;line-height: 30px;">
 <label>房兴光</label>
-<label style="float: right;">2016-12-24</label>
+<label style="position: absolute;right: 20px;">2016-12-24</label>
 </p>
 <el-row>
     <el-col :span="4">
@@ -149,12 +149,19 @@
         },
         computed: {
              ...mapState({
-              cards: state => state.cards.cards
+                cards: state => state.cards.cards
             })
         },
         created() {
             this.select_user()
-            this.$store.dispatch('select_card',this.group_id);
+            this.$store.dispatch('select_card', this.group_id);
+        },
+        watch: {
+            TaskBoxVisible: function (val, oldVal) {
+                if (val == false) {
+                    this.resetForm('task_form');
+                }
+            }
         },
         methods: {
             add_card() {
@@ -225,9 +232,7 @@
                 }
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '添加'
-                this.$nextTick(function () {
-                    this.$refs.task_form.resetFields();
-                })
+                this.inputContent = ''
             },
             add_task() {
                 this.$refs.task_form.validate((valid) => {
@@ -325,6 +330,9 @@
                     })
                 });
             },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            }
         },
         mounted() {
             this.$dragging.$on('dragged', ({ value }) => {

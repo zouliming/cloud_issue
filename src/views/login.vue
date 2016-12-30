@@ -9,6 +9,23 @@
 <el-button type="primary" style="width:100%;" @click.native.prevent="login">登录</el-button>
 </el-form-item>
 </el-form>
+<!-- 代码 开始 -->
+<div id="t-ov">
+	<div class="motime">
+		<div id="head-body"></div>
+		<div id="head-topcover"></div>
+		<div id="head-toplogo-bg"></div>
+		<div id="head-toplogo"></div>
+		<div id="head-toplogo-2"></div>
+		<div id="head-bottom"></div>
+		<div id="head-bottom-2"></div>
+		<div id="head-sw"></div>
+		<div id="head-sw-2"></div>
+		<div id="head-eye"></div>
+		<div id="head-eye-2"></div>
+	</div>
+</div>
+<!-- 代码 结束 -->
 </section>
 
 </template>
