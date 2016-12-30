@@ -186,4 +186,7 @@
     height: 30px;
     width: 30px;
   }
+  .el-icon-plus{
+    cursor: pointer;
+  }
 </style>
