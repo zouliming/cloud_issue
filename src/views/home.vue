@@ -30,7 +30,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    overflow: hidden;
+    overflow: auto;
     transition: all 218ms ease;
     padding: 10px;
 }

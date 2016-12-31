@@ -11,19 +11,19 @@
 </el-form>
 <!-- 代码 开始 -->
 <div id="t-ov">
-	<div class="motime">
-		<div id="head-body"></div>
-		<div id="head-topcover"></div>
-		<div id="head-toplogo-bg"></div>
-		<div id="head-toplogo"></div>
-		<div id="head-toplogo-2"></div>
-		<div id="head-bottom"></div>
-		<div id="head-bottom-2"></div>
-		<div id="head-sw"></div>
-		<div id="head-sw-2"></div>
-		<div id="head-eye"></div>
-		<div id="head-eye-2"></div>
-	</div>
+  <div class="motime">
+    <div id="head-body"></div>
+    <div id="head-topcover"></div>
+    <div id="head-toplogo-bg"></div>
+    <div id="head-toplogo"></div>
+    <div id="head-toplogo-2"></div>
+    <div id="head-bottom"></div>
+    <div id="head-bottom-2"></div>
+    <div id="head-sw"></div>
+    <div id="head-sw-2"></div>
+    <div id="head-eye"></div>
+    <div id="head-eye-2"></div>
+  </div>
 </div>
 <!-- 代码 结束 -->
 </section>
@@ -73,6 +73,12 @@
           }
         });
       }
+    }
+  }
+
+  window.onload = function () {
+    if (!window.applicationCache) {
+      alert("你的浏览器不支持HTML5");
     }
   }
 </script>

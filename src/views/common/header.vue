@@ -10,6 +10,8 @@
         <el-menu theme="dark" :default-active="$route.path" class="my-el-menu" mode="horizontal" router>
           <el-menu-item index="/">项目</el-menu-item>
           <el-menu-item index="/user">用户</el-menu-item>
+          <el-menu-item index="/log">日志</el-menu-item>
+          <el-menu-item index="/help">帮助</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="4">

@@ -4,11 +4,13 @@ import store from './vuex'
 
 Vue.use(Router)
 
-import home from './views/home.vue'
-import index from './views/home/index.vue'
-import card from './views/home/card.vue'
-import user from './views/home/user.vue'
-import login from './views/login.vue'
+const home = resolve => require(['./views/home.vue'], resolve)
+const index = resolve => require(['./views/home/index.vue'], resolve)
+const card = resolve => require(['./views/home/card.vue'], resolve)
+const user = resolve => require(['./views/home/user.vue'], resolve)
+const login = resolve => require(['./views/login.vue'], resolve)
+const log = resolve => require(['./views/home/log.vue'], resolve)
+const help = resolve => require(['./views/home/help.vue'], resolve)
 
 const router = new Router({
     mode: 'history',
@@ -22,7 +24,9 @@ const router = new Router({
                 { path: '/', component: index },
                 { path: '/index', component: index },
                 { path: '/index/:group_id', component: card },
-                { path: '/user', component: user }
+                { path: '/user', component: user },
+                { path: '/log', component: log },
+                { path: '/help', component: help }
             ]
         },
     ]
