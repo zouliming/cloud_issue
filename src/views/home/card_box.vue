@@ -179,12 +179,15 @@
                 });
             },
             update_card(card, event) {
-                var card = {
+                if(card.card_name == event.target.innerHTML){
+                    return
+                }
+                var new_card = {
                     card_id: card.card_id,
                     card_name: event.target.innerHTML
                 }
-                Api.post('/Card/update', card, function (res) {
-                    Vue.set(card, 'name', event.target.innerHTML)
+                Api.post('/Card/update', new_card, function (res) {
+                    Vue.set(card, 'card_name', event.target.innerHTML)
                 });
 
             },
@@ -242,6 +245,7 @@
                             Api.post('/Task/add', this.task_form, function (res) {
                                 _this.task_form.task_id = res.task_id
                                 _this.card.tasks.push(JSON.parse(JSON.stringify(_this.task_form)))
+                                _this.TaskBoxVisible = false
                             });
                         } else {
                             var _this = this
@@ -251,9 +255,9 @@
                                         _this.card.tasks.splice(i, 1, JSON.parse(JSON.stringify(_this.task_form)))
                                     }
                                 }
+                                _this.TaskBoxVisible = false
                             });
                         }
-                        this.TaskBoxVisible = false
                     } else {
                         return false;
                     }
