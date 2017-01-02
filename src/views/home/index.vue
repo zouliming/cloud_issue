@@ -30,10 +30,10 @@
     <el-dialog :title="GroupBoxTtile" v-model="GroupBoxVisible" size="tiny">
       <span>
       <el-form :model="group_form" ref="group_form" label-width="100px" :rules="rules">
-          <el-form-item label="组名称" prop="group_name">
+          <el-form-item label="项目名称" prop="group_name">
               <el-input v-model="group_form.group_name"></el-input>
           </el-form-item>
-          <el-form-item label="组描述">
+          <el-form-item label="项目描述">
              <el-input type="textarea" v-model="group_form.group_des"></el-input>
           </el-form-item>
           <el-form-item label="参与者">
@@ -125,6 +125,13 @@
 
       },
       del_group(group) {
+        if(this.user.user_id != group.user_id){
+          this.$message({
+              type: 'error',
+              message: '只有创建人才能删除哦!'
+            });
+            return
+        }
         var _this = this
         this.$confirm('确认删除?', '提示', {
           confirmButtonText: '确定',
@@ -167,7 +174,7 @@
         Api.get('/User/select', function (res) {
           _this.users = res;
         });
-      },
+      }
     },
     components: {
     }

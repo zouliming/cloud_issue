@@ -193,9 +193,6 @@
             },
             manage_card(card, event) {
                 var _this = this
-                var card = {
-                    card_id: card.card_id,
-                }
                 if (event == 'del') {
                     _this.$confirm('确认删除该流程?', '提示', {
                         confirmButtonText: '确定',
@@ -207,7 +204,7 @@
                                 type: 'success',
                                 message: '删除成功!'
                             })
-                            _this.select_card()
+                            _this.cards.splice(_this.cards.indexOf(card), 1)
                         });
                     }).catch(() => {
                         this.$message({
