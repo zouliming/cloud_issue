@@ -21,7 +21,7 @@
 <a class="ui orange empty circular label" v-show="task.task_level==2"></a>
 </span>
 <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
-<p @click="detail_task_box(task)" style="cursor: pointer;line-height: 30px;">
+<p @click="detail_task_box(task)" style="cursor: pointer;">
 <label>房兴光</label>
 <label style="position: absolute;right: 20px;">2016-12-24</label>
 </p>
@@ -149,7 +149,8 @@
         },
         computed: {
              ...mapState({
-                cards: state => state.cards.cards
+                cards: state => state.cards.cards,
+                user: state=> state.user.user
             })
         },
         created() {
@@ -393,7 +394,7 @@
     }
     
     .diy_notification {
-        width: 250px;
+        width: 200px;
         padding: 10px;
         box-sizing: border-box;
         border-radius: 2px;
