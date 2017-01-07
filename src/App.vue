@@ -15,8 +15,6 @@
 </script>
 
 <style>
-@import '/static/sem/semantic.min.css';
-
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

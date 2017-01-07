@@ -7,6 +7,7 @@ import * as filters from './filters'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 Vue.use(ElementUI)
+import '../static/sem/semantic.min.css'
 
 // sync the router with the vuex store.
 // this registers `store.state.route`

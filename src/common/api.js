@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
+import { API_URL } from '../config'
 Vue.use(VueResource);
+
+
 Vue.http.options.emulateJSON = true;
 Vue.http.interceptors.push((request, next) => {
-
+  request.credentials = true;
   // continue to next interceptor
   next((response) => {
     // modify response
@@ -11,7 +14,6 @@ Vue.http.interceptors.push((request, next) => {
   });
 });
 
-const API_URL = '/api/index.php?s=index'
 export default {
   get(url, success) {
     Vue.http.get(API_URL + url).then((response) => {
