@@ -23,7 +23,7 @@
 <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
 <p @click="detail_task_box(task)" style="cursor: pointer;">
 <label>房兴光</label>
-<label style="position: absolute;right: 20px;">2016-12-24</label>
+<label style="position: absolute;right: 20px;">{{task.task_create_time}}</label>
 </p>
 <el-row>
     <el-col :span="4">
@@ -132,7 +132,7 @@
                 rules: {
                     task_name: [
                         { required: true, message: '请输入名称', trigger: 'blur' },
-                        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+                        { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
                     ]
                 },
                 task_level_arr: [
@@ -180,7 +180,7 @@
                 });
             },
             update_card(card, event) {
-                if(card.card_name == event.target.innerHTML){
+                if (card.card_name == event.target.innerHTML) {
                     return
                 }
                 var new_card = {
@@ -279,6 +279,13 @@
                 }).then(() => {
                     var _this = this
                     Api.post('/Task/delete', task, function (res) {
+                        if (res.status == 0) {
+                            _this.$message({
+                                type: 'error',
+                                message: res.info
+                            })
+                            return
+                        }
                         _this.$message({
                             type: 'success',
                             message: '删除成功!'
@@ -302,6 +309,13 @@
                         task_id: task.task_id
                     }
                     Api.post('/Task/move', move, function (res) {
+                        if (res.status == 0) {
+                            _this.$message({
+                                type: 'error',
+                                message: res.info
+                            })
+                            return
+                        }
                         _this.$message({
                             type: 'success',
                             message: '移动成功!'
