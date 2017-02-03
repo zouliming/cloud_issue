@@ -69,7 +69,7 @@
                         <editor :input-content="inputContent" :upload-url="uploadUrl"  v-model="task_form.task_des"></editor>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="add_task">立即创建</el-button>
+                        <el-button type="primary" @click="add_task">提交</el-button>
                         <el-button v-on:click="close_task_box">取消</el-button>
                     </el-form-item>
                 </el-form>

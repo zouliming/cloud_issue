@@ -16,7 +16,9 @@
           util.showMsgNotification('系统消息', data.msg)
         }
         if (data.type == 2) {
-          alert(data.msg)
+          setTimeout(function () {
+              alert(data.msg)
+          }, 3000)
         }
         if (data.type == 3) {
           _this.$store.dispatch('select_card', data.msg.group_id);
