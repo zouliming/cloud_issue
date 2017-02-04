@@ -45,7 +45,7 @@ export default {
 
 <style lang="css" scoped>
     #editor{
-        height: 200px;
+        height: 320px;
     }
     .wangEditor-container{
         border-radius: 2px;

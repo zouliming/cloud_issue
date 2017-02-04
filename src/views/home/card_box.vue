@@ -233,7 +233,7 @@
                 }
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '添加'
-                this.inputContent = ''
+                this.inputContent = '<table class="clicked" style="width: 100%;"><thead><tr><th width="120"></th><th></th></tr></thead><tbody><tr><td><h5>&nbsp;<span lang="ZH-CN">更新说明及步骤</span></h5></td><td>&nbsp;覆盖</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">回滚方法</span></h5></td><td>&nbsp;上一个版本</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">更新原因</span></h5></td><td>&nbsp;</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">影响范围</span></h5></td><td>&nbsp;</td></tr></tbody></table><p><br></p>'
             },
             add_task() {
                 this.$refs.task_form.validate((valid) => {
