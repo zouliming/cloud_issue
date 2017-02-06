@@ -17,7 +17,7 @@
 <div v-for="task in card.tasks" class="text item">
     <div class="diy_notification">
         <div class="el-notification__group">
-            <span @click="update_task_box(card,task)" style="cursor: pointer;"> {{task.task_name}}
+            <span @click="update_task_box(card,task)" style="cursor: pointer;width: 165px;overflow: hidden;display: inline-block;"> {{task.task_name}}
 <a class="ui orange empty circular label" v-show="task.task_level==2"></a>
 </span>
 <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
@@ -78,7 +78,11 @@
 
 <!--详情-->
 <el-dialog :title="task_form.task_name" v-model="TaskBoxDetailVisible">
-    <p v-html="task_form.task_des"></p>
+    <div class="wangEditor-container">
+        <div class="wangEditor-txt">
+            <p v-html="task_form.task_des"></p>
+        </div>
+    </div>
 </el-dialog>
 
 <!--负责人-->
@@ -132,7 +136,7 @@
                 rules: {
                     task_name: [
                         { required: true, message: '请输入名称', trigger: 'blur' },
-                        { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+                        { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
                     ]
                 },
                 task_level_arr: [
@@ -233,7 +237,7 @@
                 }
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '添加'
-                this.inputContent = '<table class="clicked" style="width: 100%;"><thead><tr><th width="120"></th><th></th></tr></thead><tbody><tr><td><h5>&nbsp;<span lang="ZH-CN">更新说明及步骤</span></h5></td><td>&nbsp;覆盖</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">回滚方法</span></h5></td><td>&nbsp;上一个版本</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">更新原因</span></h5></td><td>&nbsp;</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">影响范围</span></h5></td><td>&nbsp;</td></tr></tbody></table><p><br></p>'
+                this.inputContent = '<table class="clicked" style="width: 100%;"><thead><tr><th style="min-width:120px;width: 120px;"></th><th></th></tr></thead><tbody><tr><td><h5>&nbsp;<span lang="ZH-CN">更新说明及步骤</span></h5></td><td>&nbsp;覆盖</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">回滚方法</span></h5></td><td>&nbsp;上一个版本</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">更新原因</span></h5></td><td>&nbsp;</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">影响范围</span></h5></td><td>&nbsp;</td></tr></tbody></table><p><br></p>'
             },
             add_task() {
                 this.$refs.task_form.validate((valid) => {
