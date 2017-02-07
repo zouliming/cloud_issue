@@ -17,15 +17,15 @@
     data() {
       return {
         dialogVisible: false,
-        has_unread_msg : false,
-        timer_index:''
+        has_unread_msg: false,
+        timer_index: ''
       };
     },
-    methods:{
-      dialogClose(){
+    methods: {
+      dialogClose() {
         this.dialogVisible = false
         this.has_unread_msg = false
-         window.clearInterval(this.timer_index)
+        window.clearInterval(this.timer_index)
       }
     },
     created() {
@@ -45,7 +45,10 @@
           }, 60000)
         }
         if (data.type == 3) {
-          _this.$store.dispatch('select_card', data.msg.group_id);
+          if (_this.$store.state.cards.current_group_id == data.msg.group_id) {
+            _this.$store.dispatch('select_card', data.msg.group_id);
+          }
+          _this.$store.dispatch('set_current_task_id', data.msg.task_id);
         }
       })
     }

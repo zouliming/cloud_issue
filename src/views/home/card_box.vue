@@ -3,7 +3,7 @@
         <div class="board-scrum-view">
             <div class="board-scrum-stages">
                 <div v-for="(card,index) in cards" class="scrum-stage" v-dragging="{ item: card, list: cards, group: 'card' }" :key="card.card_id">
-                    <el-card class="box-card">
+                    <el-card class="box-card" v-bind:class="{ card_active: is_card_owner(card.card_owner)}">
                         <div slot="header" class="clearfix my_handle">
                             <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.card_name}}</span>
 <el-dropdown style="position: absolute;right: 12px;cursor: pointer;" @command="manage_card(card,$event)">
@@ -15,7 +15,7 @@
 </el-dropdown>
 </div>
 <div v-for="task in card.tasks" class="text item">
-    <div class="diy_notification">
+    <div class="diy_notification" v-bind:class="{ task_active: is_current_task(card.card_owner,task)}">
         <div class="el-notification__group">
             <span @click="update_task_box(card,task)" style="cursor: pointer;width: 165px;overflow: hidden;display: inline-block;"> {{task.task_name}}
 <a class="ui orange empty circular label" v-show="task.task_level==2"></a>
@@ -154,11 +154,14 @@
         computed: {
              ...mapState({
                 cards: state => state.cards.cards,
-                user: state=> state.user.user
+                user: state=> state.user.user,
+                current_task_id : state=> state.cards.current_task_id,
+                current_group_id : state=> state.cards.current_group_id
             })
         },
         created() {
-            this.select_user()
+            this.current_group_id = this.group_id;
+            this.select_user();
             this.$store.dispatch('select_card', this.group_id);
         },
         watch: {
@@ -352,6 +355,18 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
+            },
+            is_card_owner(card_owner){
+                if(card_owner && card_owner.indexOf(this.user.user_id)!=-1){
+                    return true
+                }
+                return false
+            },
+            is_current_task(card_owner,task){
+                if(this.is_card_owner(card_owner) && task.task_id == this.current_task_id){
+                    return true
+                }
+                return false
             }
         },
         mounted() {
@@ -425,6 +440,12 @@
     
     .box-card {
         background-color: #EEE
+    }
+    .card_active{
+        background-color: rgba(79, 175, 76, 0.2);
+    }
+    .task_active .el-notification__group span,.task_active .el-notification__group p{
+         color: #F2711C;
     }
 </style>
 

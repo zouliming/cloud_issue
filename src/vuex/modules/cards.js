@@ -3,7 +3,9 @@ import Api from '../../common/api'
 
 export default {
   state: {
-    cards: []
+    cards: [],
+    current_group_id:'',
+    current_task_id:''
   },
   mutations: {
     //查询流程
@@ -12,10 +14,16 @@ export default {
         state.cards = res;
       });
     },
+    set_current_task_id(state, task_id) {
+      state.current_task_id = task_id;
+    }
   },
   actions: {
     select_card({commit}, group_id) {
       commit('select_card', group_id)
     },
+    set_current_task_id({commit}, task_id) {
+      commit('set_current_task_id', task_id)
+    }
   }
 }
