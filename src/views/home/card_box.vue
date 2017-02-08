@@ -155,12 +155,10 @@
              ...mapState({
                 cards: state => state.cards.cards,
                 user: state=> state.user.user,
-                current_task_id : state=> state.cards.current_task_id,
-                current_group_id : state=> state.cards.current_group_id
+                current_task_id : state=> state.cards.current_task_id
             })
         },
         created() {
-            this.current_group_id = this.group_id;
             this.select_user();
             this.$store.dispatch('select_card', this.group_id);
         },

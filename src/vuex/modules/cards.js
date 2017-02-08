@@ -10,6 +10,7 @@ export default {
   mutations: {
     //查询流程
     select_card(state, group_id) {
+      state.current_group_id = group_id;
       Api.get('/Card/select/group_id/' + group_id, function (res) {
         state.cards = res;
       });
