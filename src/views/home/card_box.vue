@@ -155,7 +155,7 @@
              ...mapState({
                 cards: state => state.cards.cards,
                 user: state=> state.user.user,
-                current_task_id : state=> state.cards.current_task_id
+                current_task_id: state=> state.cards.current_task_id
             })
         },
         created() {
@@ -177,6 +177,13 @@
                     group_id: this.group_id
                 }
                 Api.post('/Card/add', card, function (res) {
+                    if (res.status == 0) {
+                        _this.$message({
+                            type: 'error',
+                            message: res.info
+                        })
+                        return
+                    }
                     _this.cards.push({
                         card_id: res.card_id,
                         card_name: res.card_name,
@@ -185,6 +192,7 @@
                 });
             },
             update_card(card, event) {
+                var _this = this
                 if (card.card_name == event.target.innerHTML) {
                     return
                 }
@@ -193,6 +201,13 @@
                     card_name: event.target.innerHTML
                 }
                 Api.post('/Card/update', new_card, function (res) {
+                    if (res.status == 0) {
+                        _this.$message({
+                            type: 'error',
+                            message: res.info
+                        })
+                        return
+                    }
                     Vue.set(card, 'card_name', event.target.innerHTML)
                 });
 
@@ -206,6 +221,13 @@
                         type: 'warning'
                     }).then(() => {
                         Api.post('/Card/delete', card, function (res) {
+                            if (res.status == 0) {
+                                _this.$message({
+                                    type: 'error',
+                                    message: res.info
+                                })
+                                return
+                            }
                             _this.$message({
                                 type: 'success',
                                 message: '删除成功!'
@@ -354,14 +376,14 @@
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
-            is_card_owner(card_owner){
-                if(card_owner && card_owner.indexOf(this.user.user_id)!=-1){
+            is_card_owner(card_owner) {
+                if (card_owner && card_owner.indexOf(this.user.user_id) != -1) {
                     return true
                 }
                 return false
             },
-            is_current_task(card_owner,task){
-                if(this.is_card_owner(card_owner) && task.task_id == this.current_task_id){
+            is_current_task(card_owner, task) {
+                if (this.is_card_owner(card_owner) && task.task_id == this.current_task_id) {
                     return true
                 }
                 return false

@@ -57,7 +57,7 @@
 <script>
   import Vue from 'vue'
   import Api from '../../common/api'
-  import { mapState} from 'vuex'
+  import { mapState } from 'vuex'
 
   export default {
     data() {
@@ -84,10 +84,10 @@
       this.select_group()
       this.select_user()
     },
-    computed:{
+    computed: {
        ...mapState({
-         user:state=>state.user.user
-       })
+        user: state=>state.user.user
+      })
     },
     methods: {
       select_group() {
@@ -112,12 +112,19 @@
       add_group() {
         var _this = this
         if (_this.group_form.group_id == '') {
-          Api.post('/Group/add',this.group_form, function (res) {
+          Api.post('/Group/add', this.group_form, function (res) {
             _this.groups.push(res)
             _this.GroupBoxVisible = false
           });
         } else {
           Api.post('/Group/update', this.group_form, function (res) {
+            if (res.status == 0) {
+              _this.$message({
+                type: 'error',
+                message: res.info
+              })
+              return
+            }
             _this.select_group()
             _this.GroupBoxVisible = false
           });
@@ -125,12 +132,12 @@
 
       },
       del_group(group) {
-        if(this.user.user_id != group.user_id){
+        if (this.user.user_id != group.user_id) {
           this.$message({
-              type: 'error',
-              message: '只有创建人才能删除哦!'
-            });
-            return
+            type: 'error',
+            message: '只有创建人才能删除哦!'
+          });
+          return
         }
         var _this = this
         this.$confirm('确认删除?', '提示', {
@@ -139,6 +146,13 @@
           type: 'warning'
         }).then(() => {
           Api.post('/Group/delete', { 'group_id': group.group_id }, function (res) {
+            if (res.status == 0) {
+              _this.$message({
+                type: 'error',
+                message: res.info
+              })
+              return
+            }
             _this.select_group()
             _this.$message({
               type: 'success',
@@ -150,12 +164,12 @@
         });
       },
       update_group_box(group) {
-        if(this.user.user_id != group.user_id){
+        if (this.user.user_id != group.user_id) {
           this.$message({
-              type: 'error',
-              message: '只有创建人才能编辑哦!'
-            });
-            return
+            type: 'error',
+            message: '只有创建人才能编辑哦!'
+          });
+          return
         }
         this.group_form = {
           group_id: group.group_id,
