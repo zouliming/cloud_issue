@@ -6,56 +6,56 @@
                     <el-card class="box-card" v-bind:class="{ card_active: is_card_owner(card.card_owner)}">
                         <div slot="header" class="clearfix my_handle">
                             <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.card_name}}</span>
-<el-dropdown style="position: absolute;right: 12px;cursor: pointer;" @command="manage_card(card,$event)">
-<span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
-<el-dropdown-menu slot="dropdown">
-    <el-dropdown-item command='set'>设置负责人</el-dropdown-item>
-    <el-dropdown-item divided command='del'>删除</el-dropdown-item>
-</el-dropdown-menu>
-</el-dropdown>
-</div>
-<div v-for="task in card.tasks" class="text item">
-    <div class="diy_notification" v-bind:class="{ task_active: is_current_task(card.card_owner,task)}">
-        <div class="el-notification__group">
-            <span @click="update_task_box(card,task)" style="cursor: pointer;width: 165px;overflow: hidden;display: inline-block;"> {{task.task_name}}
+                            <el-dropdown style="position: absolute;right: 12px;cursor: pointer;" @command="manage_card(card,$event)">
+                                <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command='set'>设置负责人</el-dropdown-item>
+                                    <el-dropdown-item divided command='del'>删除</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                        <div v-for="task in card.tasks" class="text item">
+                            <div class="diy_notification" v-bind:class="{ task_active: is_current_task(card.card_owner,task)}">
+                                <div class="el-notification__group">
+                                    <span @click="update_task_box(card,task)" style="cursor: pointer;width: 165px;overflow: hidden;display: inline-block;"> {{task.task_name}}
 <a class="ui orange empty circular label" v-show="task.task_level==2"></a>
 </span>
-<i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
-<p @click="detail_task_box(task)" style="cursor: pointer;">
-<label>房兴光</label>
-<label style="position: absolute;right: 20px;">{{task.task_create_time}}</label>
-</p>
-<el-row>
-    <el-col :span="4">
-        <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
-    </el-col>
-    <el-col :span="16">
-        &nbsp;
-    </el-col>
-    <el-col :span="4">
-        <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
-</el-col>
-</el-row>
-</div>
-</div>
-</div>
+                                    <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
+                                    <p @click="detail_task_box(task)" class="task_created">
+                                        <label style="display:block">{{task.user_name}}</label>
+                                        <label style="display:block;">{{task.task_create_time}}</label>
+                                    </p>
+                                    <el-row>
+                                        <el-col :span="4">
+                                            <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
+                                        </el-col>
+                                        <el-col :span="16">
+                                            &nbsp;
+                                        </el-col>
+                                        <el-col :span="4">
+                                            <el-button icon="arrow-right" size="mini" style="float:right;" @click="move_task(card,task,1)"></el-button>
+                                        </el-col>
+                                    </el-row>
+                                </div>
+                            </div>
+                        </div>
 
-<div class="diy_notification">
-    <div class="el-notification__group">
-        <span class="el-icon-plus" v-on:click="add_task_box(card)" style="cursor: pointer;"> 新建任务</span>
-</div>
-</div>
-</el-card>
-</div>
+                        <div class="diy_notification">
+                            <div class="el-notification__group">
+                                <span class="el-icon-plus" v-on:click="add_task_box(card)" style="cursor: pointer;"> 新建任务</span>
+                            </div>
+                        </div>
+                    </el-card>
+                </div>
 
-<div class="scrum-stage">
-    <el-button class="el-icon-plus" v-on:click="add_card"> 新建流程</el-button>
-</div>
-</div>
-</div>
-<!--编辑窗-->
-<el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible">
-    <span>
+                <div class="scrum-stage">
+                    <el-button class="el-icon-plus" v-on:click="add_card"> 新建流程</el-button>
+                </div>
+            </div>
+        </div>
+        <!--编辑窗-->
+        <el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible">
+            <span>
                 <el-form :model="task_form" ref="task_form" label-width="100px" :rules="rules">
                     <el-form-item label="任务名称" prop="task_name">
                         <el-input v-model="task_form.task_name"></el-input>
@@ -74,20 +74,20 @@
                     </el-form-item>
                 </el-form>
             </span>
-</el-dialog>
+        </el-dialog>
 
-<!--详情-->
-<el-dialog :title="task_form.task_name" v-model="TaskBoxDetailVisible">
-    <div class="wangEditor-container">
-        <div class="wangEditor-txt">
-            <p v-html="task_form.task_des"></p>
-        </div>
-    </div>
-</el-dialog>
+        <!--详情-->
+        <el-dialog :title="task_form.task_name" v-model="TaskBoxDetailVisible">
+            <div class="wangEditor-container">
+                <div class="wangEditor-txt">
+                    <p v-html="task_form.task_des"></p>
+                </div>
+            </div>
+        </el-dialog>
 
-<!--负责人-->
-<el-dialog title="负责人" v-model="OwnerBoxVisible" size="tiny">
-    <span>
+        <!--负责人-->
+        <el-dialog title="负责人" v-model="OwnerBoxVisible" size="tiny">
+            <span>
       <el-form :model="owner_form" label-width="100px">
           <el-form-item label="负责人">
             <el-select v-model="owner_form.card_owner" multiple placeholder="请选择">
@@ -103,9 +103,9 @@
           </el-form-item>
       </el-form>
   </span>
-</el-dialog>
+        </el-dialog>
 
-</section>
+    </section>
 </template>
 
 <script>
@@ -292,7 +292,13 @@
                 this.card = card
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '编辑'
-                this.task_form = JSON.parse(JSON.stringify(task))
+                this.task_form = {
+                    card_id: task.card_id,
+                    task_id: task.task_id,
+                    task_name: task.task_name,
+                    task_level: task.task_level,
+                    task_des: task.task_des
+                }
                 this.inputContent = task.task_des
             },
             close_task_box() {
@@ -367,10 +373,13 @@
                 var _this = this
                 Api.post('/Card/update', this.owner_form, function (res) {
                     _this.OwnerBoxVisible = false
-                    _this.$message({
-                        type: 'success',
-                        message: '操作成功!'
-                    })
+                    if (res.status == 0) {
+                        _this.$message({
+                            type: 'error',
+                            message: res.info
+                        })
+                        return
+                    }
                 });
             },
             resetForm(formName) {
@@ -390,6 +399,7 @@
             }
         },
         mounted() {
+            var _this = this
             this.$dragging.$on('dragged', ({ value }) => {
                 var order = [];
                 value.list.forEach(function (card, index) {
@@ -399,7 +409,13 @@
                     })
                 })
                 Api.post('/Card/order', { order }, function (res) {
-
+                    if (res.status == 0) {
+                        _this.$message({
+                            type: 'error',
+                            message: res.info
+                        })
+                        return
+                    }
                 });
             })
         },
@@ -407,6 +423,7 @@
             'editor': Editor
         }
     }
+
 </script>
 
 <style scoped>
@@ -461,11 +478,19 @@
     .box-card {
         background-color: #EEE
     }
-    .card_active{
+    
+    .card_active {
         background-color: rgba(79, 175, 76, 0.2);
     }
-    .task_active .el-notification__group span,.task_active .el-notification__group p{
-         color: #F2711C;
+    
+    .task_active .el-notification__group span,
+    .task_active .el-notification__group p {
+        color: #F2711C;
+    }
+    
+    .task_created label {
+        display: block;
+        cursor: pointer;
     }
 </style>
 
