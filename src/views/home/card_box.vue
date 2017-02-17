@@ -30,6 +30,7 @@
                                             <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
                                         </el-col>
                                         <el-col :span="16">
+                                            <push-code :branch_name="task.task_name" :card_id="card.card_id"></push-code>
                                             &nbsp;
                                         </el-col>
                                         <el-col :span="4">
@@ -114,6 +115,7 @@
     import Editor from '../common/editor'
     import VueDND from 'awe-dnd'
     import { mapState, mapActions } from 'vuex'
+    import PushCode from '../common/pushCode'
 
     Vue.use(VueDND)
 
@@ -277,7 +279,7 @@
                             Api.post('/Task/update', this.task_form, function (res) {
                                 for (var i = 0; i < _this.card.tasks.length; i++) {
                                     if (_this.card.tasks[i].task_id == _this.task_form.task_id) {
-                                        _this.card.tasks.splice(i, 1, JSON.parse(JSON.stringify(_this.task_form)))
+                                         _this.card.tasks[i] = JSON.parse(JSON.stringify(_this.task_form))
                                     }
                                 }
                                 _this.TaskBoxVisible = false
@@ -420,7 +422,8 @@
             })
         },
         components: {
-            'editor': Editor
+            'editor': Editor,
+            'PushCode':PushCode
         }
     }
 
