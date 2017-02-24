@@ -23,7 +23,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://118.244.224.156/api',
+        target: 'http://issue.biggeryun.com/api/index.php?s=index',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

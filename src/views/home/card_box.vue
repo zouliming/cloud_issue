@@ -55,7 +55,7 @@
             </div>
         </div>
         <!--编辑窗-->
-        <el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible">
+        <el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible" :modal="false">
             <span>
                 <el-form :model="task_form" ref="task_form" label-width="100px" :rules="rules">
                     <el-form-item label="任务名称" prop="task_name">
@@ -67,9 +67,20 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="任务描述">
-                        <editor :input-content="inputContent" :upload-url="uploadUrl"  v-model="task_form.task_des"></editor>
+                        <editor :input-content="inputContent" v-model="task_form.task_des"></editor>
                     </el-form-item>
                     <el-form-item>
+                        <el-upload
+                            class="upload-file"
+                            :action="upload_url"
+                            :on-success="upload_success"
+                            :on-remove='upload_remove'
+                            :file-list="fileList"
+                            >
+                            <el-button size="small" type="primary">上传附件</el-button>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item style="text-align: right;">
                         <el-button type="primary" @click="add_task">提交</el-button>
                         <el-button v-on:click="close_task_box">取消</el-button>
                     </el-form-item>
@@ -116,6 +127,7 @@
     import VueDND from 'awe-dnd'
     import { mapState, mapActions } from 'vuex'
     import PushCode from '../common/pushCode'
+    import { API_URL } from '../../config'
 
     Vue.use(VueDND)
 
@@ -128,13 +140,7 @@
                 TaskBoxTtile: '编辑',//编辑界面标题
                 TaskBoxDetailVisible: false,//详情界面显是否显示
                 OwnerBoxVisible: false,
-                task_form: {
-                    card_id: '',
-                    task_id: '',
-                    task_name: '',
-                    task_level: '1',
-                    task_des: ''
-                },
+                task_form: {},
                 rules: {
                     task_name: [
                         { required: true, message: '请输入名称', trigger: 'blur' },
@@ -147,10 +153,10 @@
                 ],
                 // input content to editor
                 inputContent: '',
-                // set image upload api url
-                uploadUrl: '/',
                 users: [],
-                owner_form: {}
+                owner_form: {},
+                upload_url: API_URL + '/Upload/uploadFile',
+                fileList: []
             }
         },
         computed: {
@@ -258,15 +264,19 @@
                     task_id: '',
                     task_name: '',
                     task_level: '1',
-                    task_des: ''
+                    task_des: '',
+                    task_file: ''
                 }
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '添加'
                 this.inputContent = '<table class="clicked" style="width: 100%;"><thead><tr><th style="min-width:120px;width: 120px;"></th><th></th></tr></thead><tbody><tr><td><h5>&nbsp;<span lang="ZH-CN">更新说明及步骤</span></h5></td><td>&nbsp;覆盖</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">回滚方法</span></h5></td><td>&nbsp;上一个版本</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">更新原因</span></h5></td><td>&nbsp;</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">影响范围</span></h5></td><td>&nbsp;</td></tr></tbody></table><p><br></p>'
+                this.fileList = [];
             },
             add_task() {
                 this.$refs.task_form.validate((valid) => {
                     if (valid) {
+                        this.task_form.task_file = this.fileList || [];
+                        console.log(JSON.parse(JSON.stringify(this.fileList)))
                         if (this.task_form.task_id == '') {
                             var _this = this
                             Api.post('/Task/add', this.task_form, function (res) {
@@ -279,7 +289,7 @@
                             Api.post('/Task/update', this.task_form, function (res) {
                                 for (var i = 0; i < _this.card.tasks.length; i++) {
                                     if (_this.card.tasks[i].task_id == _this.task_form.task_id) {
-                                         _this.card.tasks[i] = JSON.parse(JSON.stringify(_this.task_form))
+                                        _this.card.tasks[i] = JSON.parse(JSON.stringify(_this.task_form))
                                     }
                                 }
                                 _this.TaskBoxVisible = false
@@ -299,8 +309,10 @@
                     task_id: task.task_id,
                     task_name: task.task_name,
                     task_level: task.task_level,
-                    task_des: task.task_des
+                    task_des: task.task_des,
+                    task_file: task.task_file
                 }
+                this.fileList = JSON.parse(this.task_form.task_file || '[]');
                 this.inputContent = task.task_des
             },
             close_task_box() {
@@ -398,6 +410,13 @@
                     return true
                 }
                 return false
+            },
+            upload_success(response, file, fileList) {
+                //console.log(fileList)
+                this.fileList = fileList;
+            },
+            upload_remove(file, fileList) {
+                this.fileList = fileList.splice(fileList.indexOf(file), 1)
             }
         },
         mounted() {
@@ -423,7 +442,7 @@
         },
         components: {
             'editor': Editor,
-            'PushCode':PushCode
+            'PushCode': PushCode
         }
     }
 
