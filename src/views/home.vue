@@ -23,15 +23,8 @@
   }
 </script>
 
-<style>
+<style scoped>
 .my_body{
-    position: fixed;
-    top: 64px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    overflow: auto;
-    transition: all 218ms ease;
-    padding: 10px;
+  margin: 80px 10px 10px 10px;
 }
 </style>

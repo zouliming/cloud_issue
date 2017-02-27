@@ -55,7 +55,7 @@
             </div>
         </div>
         <!--编辑窗-->
-        <el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible" :modal="false">
+        <el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible" :modal-append-to-body="false">
             <span>
                 <el-form :model="task_form" ref="task_form" label-width="100px" :rules="rules">
                     <el-form-item label="任务名称" prop="task_name">
@@ -75,6 +75,7 @@
                             :action="upload_url"
                             :on-success="upload_success"
                             :on-remove='upload_remove'
+                            :on-preview="upload_link"
                             :file-list="fileList"
                             >
                             <el-button size="small" type="primary">上传附件</el-button>
@@ -417,6 +418,9 @@
             },
             upload_remove(file, fileList) {
                 this.fileList = fileList.splice(fileList.indexOf(file), 1)
+            },
+            upload_link(file){
+                window.open(file.response);
             }
         },
         mounted() {

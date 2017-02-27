@@ -11,9 +11,10 @@
               {{log.log_id}}
             </div>
             <div class="content">
-              <div class="summary"><a class="user"> {{log.user_name}} </a>
+              <div class="summary">
+                <a class="user"> {{log.user_name}} </a>
                 <el-tooltip class="item" effect="dark" :content="log.log_sql" placement="bottom" style="cursor: pointer;">
-                  {{log.log_info}}
+                  <a>{{log.log_info}}</a>
                 </el-tooltip>
                 <div class="date">{{log.log_create_time}} </div>
               </div>
