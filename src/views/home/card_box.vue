@@ -277,12 +277,11 @@
                 this.$refs.task_form.validate((valid) => {
                     if (valid) {
                         this.task_form.task_file = this.fileList || [];
-                        console.log(JSON.parse(JSON.stringify(this.fileList)))
                         if (this.task_form.task_id == '') {
                             var _this = this
                             Api.post('/Task/add', this.task_form, function (res) {
                                 _this.task_form.task_id = res.task_id
-                                _this.card.tasks.push(JSON.parse(JSON.stringify(_this.task_form)))
+                                _this.card.tasks.push(JSON.parse(JSON.stringify(res)))
                                 _this.TaskBoxVisible = false
                             });
                         } else {
@@ -290,7 +289,9 @@
                             Api.post('/Task/update', this.task_form, function (res) {
                                 for (var i = 0; i < _this.card.tasks.length; i++) {
                                     if (_this.card.tasks[i].task_id == _this.task_form.task_id) {
-                                        _this.card.tasks[i] = JSON.parse(JSON.stringify(_this.task_form))
+                                        _this.card.tasks[i]['task_name'] = _this.task_form.task_name;
+                                        _this.card.tasks[i]['task_level'] = _this.task_form.task_level;
+                                        _this.card.tasks[i]['task_des'] = _this.task_form.task_des;
                                     }
                                 }
                                 _this.TaskBoxVisible = false
@@ -417,9 +418,9 @@
                 this.fileList = fileList;
             },
             upload_remove(file, fileList) {
-                this.fileList = fileList.splice(fileList.indexOf(file), 1)
+                this.fileList = fileList;
             },
-            upload_link(file){
+            upload_link(file) {
                 window.open(file.response);
             }
         },
@@ -517,6 +518,17 @@
     .task_created label {
         display: block;
         cursor: pointer;
+    }
+    
+    .my_body {
+        position: absolute;
+        top: 75px;
+        right: 0;
+        bottom: 0;
+        left: 10px;
+        padding: 0;
+        overflow: hidden;
+        transition: all 218ms ease;
     }
 </style>
 

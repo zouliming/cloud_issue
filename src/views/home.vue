@@ -18,13 +18,14 @@
   export default {
     name: 'app',
     components: {
-      MyHeader,MyNotify
+      MyHeader, MyNotify
     }
   }
+
 </script>
 
 <style scoped>
-.my_body{
-  margin: 80px 10px 10px 10px;
-}
+  .my_body {
+    margin: 80px 10px 10px 10px;
+  }
 </style>
