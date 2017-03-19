@@ -14,6 +14,14 @@
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </div>
+
+
+                        <div class="diy_notification">
+                            <div class="el-notification__group">
+                                <span class="el-icon-plus" v-on:click="add_task_box(card)" style="cursor: pointer;"> 新建任务</span>
+                            </div>
+                        </div>
+
                         <div v-for="task in card.tasks" class="text item">
                             <div class="diy_notification" v-bind:class="{ task_active: is_current_task(card.card_owner,task)}">
                                 <div class="el-notification__group">
@@ -24,6 +32,7 @@
                                     <p @click="detail_task_box(task)" class="task_created">
                                         <label style="display:block">{{task.user_name}}</label>
                                         <label style="display:block;">{{task.task_create_time}}</label>
+                                        <label style="display:block;"><el-progress :percentage="parseInt(task.task_rate)"></el-progress></label>
                                     </p>
                                     <el-row>
                                         <el-col :span="4">
@@ -41,11 +50,6 @@
                             </div>
                         </div>
 
-                        <div class="diy_notification">
-                            <div class="el-notification__group">
-                                <span class="el-icon-plus" v-on:click="add_task_box(card)" style="cursor: pointer;"> 新建任务</span>
-                            </div>
-                        </div>
                     </el-card>
                 </div>
 
@@ -65,6 +69,15 @@
                         <el-radio-group v-model="task_form.task_level">
                         <el-radio :label="task_level.value" v-for="task_level in task_level_arr">{{task_level.label}}</el-radio>
                         </el-radio-group>
+
+                        <div style="width: 300px;float: right;">
+                            <el-slider
+                            v-model="task_form.task_rate"
+                            :step="25"
+                            show-stops>
+                            </el-slider>
+                        </div>
+                         
                     </el-form-item>
                     <el-form-item label="任务描述">
                         <editor :input-content="inputContent" v-model="task_form.task_des"></editor>
@@ -265,6 +278,7 @@
                     task_id: '',
                     task_name: '',
                     task_level: '1',
+                    task_rate: 0,
                     task_des: '',
                     task_file: ''
                 }
@@ -311,6 +325,7 @@
                     task_id: task.task_id,
                     task_name: task.task_name,
                     task_level: task.task_level,
+                    task_rate: parseInt(task.task_rate),
                     task_des: task.task_des,
                     task_file: task.task_file
                 }
