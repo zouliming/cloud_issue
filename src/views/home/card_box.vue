@@ -30,7 +30,7 @@
 </span>
                                     <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
                                     <p @click="detail_task_box(task)" class="task_created">
-                                        <label style="display:block">{{task.user_name}}</label>
+                                        <label style="display:block" :class="{user_name_active:task.user_id==user.user_id}">{{task.user_name}}</label>
                                         <label style="display:block;">{{task.task_create_time}}</label>
                                         <label style="display:block;"><el-progress :percentage="parseInt(task.task_rate)"></el-progress></label>
                                     </p>
@@ -562,6 +562,9 @@
         padding: 0;
         overflow: hidden;
         transition: all 218ms ease;
+    }
+    .user_name_active{
+        color: orangered;
     }
 </style>
 
