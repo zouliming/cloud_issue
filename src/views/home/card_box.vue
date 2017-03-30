@@ -65,19 +65,35 @@
                     <el-form-item label="任务名称" prop="task_name">
                         <el-input v-model="task_form.task_name"></el-input>
                     </el-form-item>
-                    <el-form-item label="优先级">
-                        <el-radio-group v-model="task_form.task_level">
-                        <el-radio :label="task_level.value" v-for="task_level in task_level_arr">{{task_level.label}}</el-radio>
-                        </el-radio-group>
-
-                        <div style="width: 300px;float: right;">
-                            <el-slider
-                            v-model="task_form.task_rate"
-                            :step="25"
-                            show-stops>
-                            </el-slider>
-                        </div>
-                         
+                     <el-form-item label="优先级">
+                       <el-col :span="8">
+                                <el-radio-group v-model="task_form.task_level">
+                                <el-radio :label="task_level.value" v-for="task_level in task_level_arr">{{task_level.label}}</el-radio>
+                                </el-radio-group>
+                        </el-col>
+                        <el-col :span="9">
+                            <el-form-item title="进度">
+                               <el-slider
+                                v-model="task_form.task_rate"
+                                :step="25"
+                                show-stops>
+                                </el-slider>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="1">
+                            &nbsp;
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item title="领取人">
+                                <el-select v-model="task_form.user_id" placeholder="请选择">
+                                    <el-option
+                                        v-for="user in users"
+                                        :label="user.user_name"
+                                        :value="user.user_id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
                     </el-form-item>
                     <el-form-item label="任务描述">
                         <editor :input-content="inputContent" v-model="task_form.task_des"></editor>
@@ -174,10 +190,10 @@
             }
         },
         computed: {
-             ...mapState({
+            ...mapState({
                 cards: state => state.cards.cards,
-                user: state=> state.user.user,
-                current_task_id: state=> state.cards.current_task_id
+                user: state => state.user.user,
+                current_task_id: state => state.cards.current_task_id
             })
         },
         created() {
@@ -280,7 +296,8 @@
                     task_level: '1',
                     task_rate: 0,
                     task_des: '',
-                    task_file: ''
+                    task_file: '',
+                    user_id: this.user.user_id
                 }
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '添加'
@@ -327,7 +344,8 @@
                     task_level: task.task_level,
                     task_rate: parseInt(task.task_rate),
                     task_des: task.task_des,
-                    task_file: task.task_file
+                    task_file: task.task_file,
+                    user_id: task.user_id
                 }
                 this.fileList = JSON.parse(this.task_form.task_file || '[]');
                 this.inputContent = task.task_des
