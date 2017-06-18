@@ -18,6 +18,7 @@
       return {
         dialogVisible: false,
         has_unread_msg: false,
+        notice_max_num: 10,
         timer_index: '',
         dialogMsg: ''
       };
@@ -42,7 +43,11 @@
           _this.has_unread_msg = true
           _this.timer_index = setInterval(function () {
             if (_this.has_unread_msg) {
-              util.showMsgNotification('定时提醒', data.msg)
+              util.showMsgNotification('定时提醒', data.msg);
+              _this.notice_max_num--;
+              if (_this.notice_max_num <= 0) {
+                window.clearInterval(_this.timer_index)
+              }
             }
           }, 60000)
         }

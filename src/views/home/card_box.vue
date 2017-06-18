@@ -25,12 +25,12 @@
                         <div v-for="task in card.tasks" class="text item">
                             <div class="diy_notification" v-bind:class="{ task_active: is_current_task(card.card_owner,task)}">
                                 <div class="el-notification__group">
-                                    <span @click="update_task_box(card,task)" style="cursor: pointer;width: 165px;overflow: hidden;display: inline-block;"> {{task.task_name}}
-<a class="ui orange empty circular label" v-show="task.task_level==2"></a>
+                                    <span @click="update_task_box(card,task)" style="cursor: pointer;width: 160px;overflow: hidden;display: inline-block;"> {{task.task_name}}
 </span>
                                     <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
                                     <p @click="detail_task_box(task)" class="task_created">
-                                        <label style="display:block" :class="{user_name_active:task.user_id==user.user_id}">{{task.user_name}}</label>
+                                        <label style="display:block" v-show="task.task_branch">{{task.task_branch}}</label>
+                                        <label style="display:block" :class="{user_name_active:task.user_id==user.user_id}">{{task.user_name}} <a class="ui orange empty circular label" title="紧急" v-show="task.task_level==2" style="float: right;"></a></label>
                                         <label style="display:block;">{{task.task_create_time}}</label>
                                         <label style="display:block;"><el-progress :percentage="parseInt(task.task_rate)"></el-progress></label>
                                     </p>
@@ -39,7 +39,8 @@
                                             <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
                                         </el-col>
                                         <el-col :span="16">
-                                            <push-code :branch_name="task.task_name" :card_id="card.card_id"></push-code>
+                                            <push-code :branch_name="task.task_branch" :card_id="card.card_id" v-if="task.task_branch"></push-code>
+                                            <push-code :branch_name="task.task_name" :card_id="card.card_id" v-else></push-code>
                                             &nbsp;
                                         </el-col>
                                         <el-col :span="4">
@@ -63,7 +64,15 @@
             <span>
                 <el-form :model="task_form" ref="task_form" label-width="100px" :rules="rules">
                     <el-form-item label="任务名称" prop="task_name">
-                        <el-input v-model="task_form.task_name"></el-input>
+                        <el-col :span="12">
+                            <el-input v-model="task_form.task_name"></el-input>
+                        </el-col>
+                        <el-col :span="3" style="text-align: right;">
+                            分支名：
+                        </el-col>
+                        <el-col :span="9">
+                            <el-input v-model="task_form.task_branch"></el-input>
+                        </el-col>
                     </el-form-item>
                      <el-form-item label="优先级">
                        <el-col :span="8">
@@ -120,6 +129,7 @@
 
         <!--详情-->
         <el-dialog :title="task_form.task_name" v-model="TaskBoxDetailVisible">
+            <p v-show="task_form.task_branch">分支名：{{task_form.task_branch}}</p>
             <div class="wangEditor-container">
                 <div class="wangEditor-txt">
                     <p v-html="task_form.task_des"></p>
@@ -341,13 +351,14 @@
                     card_id: task.card_id,
                     task_id: task.task_id,
                     task_name: task.task_name,
+                    task_branch: task.task_branch,
                     task_level: task.task_level,
                     task_rate: parseInt(task.task_rate),
                     task_des: task.task_des,
                     task_file: task.task_file,
                     user_id: task.user_id
                 }
-                this.fileList = JSON.parse(this.task_form.task_file || '[]');
+                this.fileList = JSON.parse(task.task_file || '[]');
                 this.inputContent = task.task_des
             },
             close_task_box() {
