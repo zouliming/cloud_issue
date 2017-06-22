@@ -1,5 +1,5 @@
 <template lang="html">
-    <div id="editor" v-html="inputContent" @input="outputContent"></div>
+    <div id="editor" v-html="inputContent" @input="outputContent" style="min-height: 300px;"></div>
 </template>
 
 <script>
@@ -49,10 +49,6 @@
 </script>
 
 <style lang="css" scoped>
-    #editor {
-        height: 320px;
-    }
-    
     .wangEditor-container {
         border-radius: 2px;
         overflow: hidden;

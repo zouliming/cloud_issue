@@ -5,7 +5,7 @@
                 <div v-for="(card,index) in cards" class="scrum-stage" v-dragging="{ item: card, list: cards, group: 'card' }" :key="card.card_id">
                     <el-card class="box-card" v-bind:class="{ card_active: is_card_owner(card.card_owner)}">
                         <div slot="header" class="clearfix my_handle">
-                            <span style="line-height: 30px;width:100px;display:inline-block;" contenteditable @blur="update_card(card,$event)">{{card.card_name}}</span>
+                            <span class="box-card-title" contenteditable @blur="update_card(card,$event)">{{card.card_name}}</span>
                             <el-dropdown style="position: absolute;right: 12px;cursor: pointer;" @command="manage_card(card,$event)">
                                 <span class="el-dropdown-link"><i class="el-icon-caret-bottom el-icon--right"></i></span>
                                 <el-dropdown-menu slot="dropdown">
@@ -25,8 +25,7 @@
                         <div v-for="task in card.tasks" class="text item">
                             <div class="diy_notification" v-bind:class="{ task_active: is_current_task(card.card_owner,task)}">
                                 <div class="el-notification__group">
-                                    <span @click="update_task_box(card,task)" style="cursor: pointer;width: 160px;overflow: hidden;display: inline-block;"> {{task.task_name}}
-</span>
+                                    <span @click="update_task_box(card,task)" style="cursor: pointer;width: 160px;overflow: hidden;display: inline-block;"> {{task.task_name}}</span>
                                     <i class="el-icon-close" style="float:right;cursor: pointer;font-size:10px;" @click="del_task(card,task)"></i>
                                     <p @click="detail_task_box(task)" class="task_created">
                                         <label style="display:block" v-show="task.task_branch">{{task.task_branch}}</label>
@@ -39,8 +38,8 @@
                                             <el-button icon="arrow-left" size="mini" @click="move_task(card,task,-1)"></el-button>
                                         </el-col>
                                         <el-col :span="16">
-                                            <push-code :branch_name="task.task_branch" :card_id="card.card_id" v-if="task.task_branch"></push-code>
-                                            <push-code :branch_name="task.task_name" :card_id="card.card_id" v-else></push-code>
+                                            <push-code :branch_name="task.task_branch" :card_id="card.card_id" :project_name="task.task_project || default_project_name" v-if="task.task_branch"></push-code>
+                                            <push-code :branch_name="task.task_name" :card_id="card.card_id" :project_name="task.task_project || default_project_name" v-else></push-code>
                                             &nbsp;
                                         </el-col>
                                         <el-col :span="4">
@@ -61,24 +60,34 @@
         </div>
         <!--编辑窗-->
         <el-dialog :title="TaskBoxTtile" v-model="TaskBoxVisible" :modal-append-to-body="false">
-            <span>
+            <div>
                 <el-form :model="task_form" ref="task_form" label-width="100px" :rules="rules">
                     <el-form-item label="任务名称" prop="task_name">
                         <el-col :span="12">
                             <el-input v-model="task_form.task_name"></el-input>
                         </el-col>
-                        <el-col :span="3" style="text-align: right;">
-                            分支名：
-                        </el-col>
+                    </el-form-item>
+                    <el-form-item label="分支名" prop="task_branch">
                         <el-col :span="9">
                             <el-input v-model="task_form.task_branch"></el-input>
                         </el-col>
                     </el-form-item>
-                     <el-form-item label="优先级">
+                    <el-form-item label="所属项目" prop="task_project">
+                        <el-col :span="9">
+                            <el-select v-model="task_form.task_project" placeholder="请选择">
+                                <el-option
+                                    v-for="project in projects"
+                                    :label="project.key"
+                                    :value="project.value">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-form-item>
+                    <el-form-item label="优先级">
                        <el-col :span="8">
-                                <el-radio-group v-model="task_form.task_level">
-                                <el-radio :label="task_level.value" v-for="task_level in task_level_arr">{{task_level.label}}</el-radio>
-                                </el-radio-group>
+                            <el-radio-group v-model="task_form.task_level">
+                            <el-radio :label="task_level.value" v-for="task_level in task_level_arr">{{task_level.label}}</el-radio>
+                            </el-radio-group>
                         </el-col>
                         <el-col :span="9">
                             <el-form-item title="进度">
@@ -124,7 +133,7 @@
                         <el-button v-on:click="close_task_box">取消</el-button>
                     </el-form-item>
                 </el-form>
-            </span>
+            </div>
         </el-dialog>
 
         <!--详情-->
@@ -161,6 +170,8 @@
 </template>
 
 <script>
+    /* eslint-disable indent */
+
     import Vue from 'vue'
     import Api from '../../common/api'
     import Editor from '../common/editor'
@@ -194,9 +205,11 @@
                 // input content to editor
                 inputContent: '',
                 users: [],
+                projects: {},
                 owner_form: {},
                 upload_url: API_URL + '/Upload/uploadFile',
-                fileList: []
+                fileList: [],
+                default_project_name:'cloud_web'
             }
         },
         computed: {
@@ -208,6 +221,7 @@
         },
         created() {
             this.select_user();
+            this.select_projects();
             this.$store.dispatch('select_card', this.group_id);
         },
         watch: {
@@ -303,6 +317,8 @@
                     card_id: card.card_id,
                     task_id: '',
                     task_name: '',
+                    task_branch: '',
+                    task_project:this.default_project_name,
                     task_level: '1',
                     task_rate: 0,
                     task_des: '',
@@ -311,7 +327,7 @@
                 }
                 this.TaskBoxVisible = true
                 this.TaskBoxTtile = '添加'
-                this.inputContent = '<table class="clicked" style="width: 100%;"><thead><tr><th style="min-width:120px;width: 120px;"></th><th></th></tr></thead><tbody><tr><td><h5>&nbsp;<span lang="ZH-CN">更新说明及步骤</span></h5></td><td>&nbsp;覆盖</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">回滚方法</span></h5></td><td>&nbsp;上一个版本</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">更新原因</span></h5></td><td>&nbsp;</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">影响范围</span></h5></td><td>&nbsp;</td></tr></tbody></table><p><br></p>'
+                this.inputContent = '<table class="desc_table" style="width: 100%;"><tr><td style="width: 120px;"><h5>&nbsp;<span lang="ZH-CN">更新说明及步骤</span></h5></td><td>&nbsp;覆盖</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">回滚方法</span></h5></td><td>&nbsp;上一个版本</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">更新原因</span></h5></td><td>&nbsp;</td></tr><tr><td><h5>&nbsp;<span lang="ZH-CN">影响范围</span></h5></td><td>&nbsp;</td></tr></></table><p><br></p>'
                 this.fileList = [];
             },
             add_task() {
@@ -333,6 +349,8 @@
                                         _this.card.tasks[i]['task_name'] = _this.task_form.task_name;
                                         _this.card.tasks[i]['task_level'] = _this.task_form.task_level;
                                         _this.card.tasks[i]['task_des'] = _this.task_form.task_des;
+                                        _this.card.tasks[i]['task_branch'] = _this.task_form.task_branch;
+                                        _this.card.tasks[i]['task_project'] = _this.task_form.task_project;
                                     }
                                 }
                                 _this.TaskBoxVisible = false
@@ -352,6 +370,7 @@
                     task_id: task.task_id,
                     task_name: task.task_name,
                     task_branch: task.task_branch,
+                    task_project: task.task_project || this.default_project_name,
                     task_level: task.task_level,
                     task_rate: parseInt(task.task_rate),
                     task_des: task.task_des,
@@ -458,7 +477,7 @@
                 return false
             },
             upload_success(response, file, fileList) {
-                //console.log(fileList)
+                //  console.log(fileList)
                 this.fileList = fileList;
             },
             upload_remove(file, fileList) {
@@ -466,6 +485,27 @@
             },
             upload_link(file) {
                 window.open(file.response);
+            },
+            select_projects(){
+                var _this = this;
+                _this.projects = [
+                    {
+                        key: 'cloud_web',
+                        value: 'cloud_web'
+                    },
+                    {
+                        key: 'crm_server',
+                        value: 'crm_server'
+                    },
+                    {
+                        key: 'crm_client',
+                        value: 'crm_client'
+                    },
+                    {
+                        key: 'console_api',
+                        value: 'console_api'
+                    },
+                ];
             }
         },
         mounted() {
@@ -508,7 +548,7 @@
         overflow-y: auto;
         overflow-x: hidden;
     }
-    
+
     .board-scrum-stages {
         position: relative;
         white-space: nowrap;
@@ -517,7 +557,7 @@
         -webkit-transform: translate3d(0, 0, 0);
         transform: translate3d(0, 0, 0);
     }
-    
+
     .scrum-stage {
         position: relative;
         display: -webkit-inline-flex;
@@ -533,7 +573,7 @@
         vertical-align: top;
         border-radius: 3px;
     }
-    
+
     .diy_notification {
         width: 200px;
         padding: 10px;
@@ -545,25 +585,33 @@
         overflow: hidden;
         margin: 10px;
     }
-    
+
     .box-card {
-        background-color: #EEE
+        background-color: #EEE;
+        border:none;
+        border-radius: 0;
+        box-shadow: none;
     }
-    
+    .box-card-title{
+        line-height: 30px;
+        width:100px;
+        display:inline-block;
+        font-size: 18px;
+    }
     .card_active {
         background-color: rgba(79, 175, 76, 0.2);
     }
-    
+
     .task_active .el-notification__group span,
     .task_active .el-notification__group p {
         color: #F2711C;
     }
-    
+
     .task_created label {
         display: block;
         cursor: pointer;
     }
-    
+
     .my_body {
         position: absolute;
         top: 75px;
@@ -583,7 +631,7 @@
     .el-card__header {
         padding: 10px !important;
     }
-    
+
     .el-card__body {
         padding: 0 !important;
     }
